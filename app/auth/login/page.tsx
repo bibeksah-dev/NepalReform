@@ -1,4 +1,4 @@
-"use client"
+ "use client"
 
 import type React from "react"
 import { Button } from "@/components/ui/button"
@@ -13,8 +13,10 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useState, useEffect } from "react"
 import { Eye, EyeOff, AlertCircle, CheckCircle, Mail } from "lucide-react"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 export default function LoginPage() {
+  const { t } = useTranslation("translation") // 👈 using your translation.json
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -25,7 +27,7 @@ export default function LoginPage() {
   const { signIn, user } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirectTo = searchParams.get('redirect') || '/'
+  const redirectTo = searchParams.get("redirect") || "/"
 
   // Redirect if already logged in
   useEffect(() => {
@@ -38,13 +40,13 @@ export default function LoginPage() {
     const newErrors: { email?: string; password?: string } = {}
 
     if (!email) {
-      newErrors.email = "Email is required"
+      newErrors.email = t("login.emailRequired")
     } else if (!validateEmail(email)) {
-      newErrors.email = "Please enter a valid email address"
+      newErrors.email = t("login.invalidEmail")
     }
 
     if (!password) {
-      newErrors.password = "Password is required"
+      newErrors.password = t("login.passwordRequired")
     }
 
     setErrors(newErrors)
@@ -54,30 +56,30 @@ export default function LoginPage() {
   const handleEmailBlur = () => {
     setEmailTouched(true)
     if (email && !validateEmail(email)) {
-      setErrors(prev => ({ ...prev, email: "Please enter a valid email address" }))
+      setErrors((prev) => ({ ...prev, email: t("login.invalidEmail") }))
     } else {
-      setErrors(prev => ({ ...prev, email: undefined }))
+      setErrors((prev) => ({ ...prev, email: undefined }))
     }
   }
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setEmail(value)
-    
+
     if (emailTouched) {
       if (!value) {
-        setErrors(prev => ({ ...prev, email: "Email is required" }))
+        setErrors((prev) => ({ ...prev, email: t("login.emailRequired") }))
       } else if (!validateEmail(value)) {
-        setErrors(prev => ({ ...prev, email: "Please enter a valid email address" }))
+        setErrors((prev) => ({ ...prev, email: t("login.invalidEmail") }))
       } else {
-        setErrors(prev => ({ ...prev, email: undefined }))
+        setErrors((prev) => ({ ...prev, email: undefined }))
       }
     }
   }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
@@ -89,13 +91,12 @@ export default function LoginPage() {
       const { user, error } = await signIn(email, password)
 
       if (error) {
-        // Handle specific error types
-        if (error.message.includes('Invalid login credentials')) {
-          setErrors({ general: 'Invalid email or password. Please try again.' })
-        } else if (error.message.includes('Email not confirmed')) {
-          setErrors({ general: 'Please check your email and click the confirmation link before signing in.' })
-        } else if (error.message.includes('Too many requests')) {
-          setErrors({ general: 'Too many login attempts. Please wait a moment and try again.' })
+        if (error.message.includes("Invalid login credentials")) {
+          setErrors({ general: t("login.invalidCredentials") })
+        } else if (error.message.includes("Email not confirmed")) {
+          setErrors({ general: t("login.emailNotConfirmed") })
+        } else if (error.message.includes("Too many requests")) {
+          setErrors({ general: t("login.tooManyRequests") })
         } else {
           setErrors({ general: error.message })
         }
@@ -103,14 +104,14 @@ export default function LoginPage() {
       }
 
       if (user) {
-        toast.success('Welcome back!', {
-          description: 'You have been successfully signed in.',
+        toast.success(t("login.welcomeBack"), {
+          description: t("login.signedInSuccess"),
         })
         router.push(redirectTo)
       }
     } catch (err) {
-      console.error('Login error:', err)
-      setErrors({ general: 'An unexpected error occurred. Please try again.' })
+      console.error("Login error:", err)
+      setErrors({ general: t("login.unexpectedError") })
     } finally {
       setIsLoading(false)
     }
@@ -124,16 +125,16 @@ export default function LoginPage() {
             <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center">
               <img src="/nepal-flag-logo.png" alt="NepalReforms Logo" className="w-12 h-12 object-contain" />
             </div>
-            <CardTitle className="text-2xl font-bold text-foreground">Welcome Back</CardTitle>
+            <CardTitle className="text-2xl font-bold text-foreground">{t("login.welcomeBack")}</CardTitle>
             <CardDescription className="text-muted-foreground">
-              Sign in to your account to share and vote on opinions
+              {t("login.signInDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
-                  Email Address
+                  {t("login.emailAddress")}
                 </Label>
                 <div className="relative">
                   <Input
@@ -144,28 +145,27 @@ export default function LoginPage() {
                     value={email}
                     onChange={handleEmailChange}
                     onBlur={handleEmailBlur}
-                    className={`h-12 pr-10 ${errors.email ? 'border-red-500' : emailTouched && validateEmail(email) ? 'border-green-500' : ''}`}
+                    className={`h-12 pr-10 ${
+                      errors.email ? "border-red-500" : emailTouched && validateEmail(email) ? "border-green-500" : ""
+                    }`}
                   />
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                    {emailTouched && (
-                      validateEmail(email) ? (
+                    {emailTouched &&
+                      (validateEmail(email) ? (
                         <CheckCircle className="h-4 w-4 text-green-500" />
                       ) : email ? (
                         <AlertCircle className="h-4 w-4 text-red-500" />
                       ) : (
                         <Mail className="h-4 w-4 text-muted-foreground" />
-                      )
-                    )}
+                      ))}
                   </div>
                 </div>
-                {errors.email && (
-                  <p className="text-sm text-red-600">{errors.email}</p>
-                )}
+                {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-sm font-medium">
-                  Password
+                  {t("login.password")}
                 </Label>
                 <div className="relative">
                   <Input
@@ -174,7 +174,7 @@ export default function LoginPage() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className={`h-12 pr-10 ${errors.password ? 'border-red-500' : ''}`}
+                    className={`h-12 pr-10 ${errors.password ? "border-red-500" : ""}`}
                   />
                   <button
                     type="button"
@@ -188,9 +188,7 @@ export default function LoginPage() {
                     )}
                   </button>
                 </div>
-                {errors.password && (
-                  <p className="text-sm text-red-600">{errors.password}</p>
-                )}
+                {errors.password && <p className="text-sm text-red-600">{errors.password}</p>}
               </div>
 
               {errors.general && (
@@ -201,22 +199,22 @@ export default function LoginPage() {
               )}
 
               <Button type="submit" className="w-full h-12 text-base font-medium" disabled={isLoading}>
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? t("login.signingIn") : t("login.signIn")}
               </Button>
             </form>
 
             <div className="mt-6 space-y-4">
               <div className="text-center">
                 <Link href="/auth/forgot-password" className="text-sm text-primary hover:underline">
-                  Forgot your password?
+                  {t("login.forgotPassword", "Forgot your password?")}
                 </Link>
               </div>
-              
+
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">
-                  Don't have an account?{" "}
+                  {t("login.noAccount")}{" "}
                   <Link href="/auth/sign-up" className="text-primary hover:underline font-medium">
-                    Sign up
+                    {t("login.signUp")}
                   </Link>
                 </p>
               </div>
@@ -226,7 +224,7 @@ export default function LoginPage() {
 
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
-            Powered by{" "}
+            {t("login.poweredBy")}{" "}
             <Link href="https://nexalaris.com/" target="_blank" className="text-primary hover:underline font-medium">
               Nexalaris Tech Pvt. Ltd
             </Link>

@@ -4,26 +4,38 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowDown, Users, MessageSquare, Vote } from "lucide-react"
 import Link from "next/link"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
 import Image from "next/image"
+import { useTranslation } from "react-i18next"
 
-const words = ["Read", "Challenge", "Improve"]
 
 export function HeroSection() {
+  const { t , ready} = useTranslation("translation")
+  if (!ready) return null
+const words = t("heroSection.animatedWords", { returnObjects: true }) as string[];
+
   const scrollToAgendas = () => {
     const agendasSection = document.getElementById("agendas-section")
     agendasSection?.scrollIntoView({ behavior: "smooth" })
   }
 
   const [index, setIndex] = useState(0)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
+    if (words && words.length > 0) {
+      setIsLoaded(true)
+    }
+  }, [words])
+
+  useEffect(() => {
+    if (!isLoaded) return
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % words.length)
-    }, 2000) // change word every 2s
+    }, 2000)
     return () => clearInterval(interval)
-  }, [])
+  }, [isLoaded, words.length])
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-16 sm:py-24">
@@ -73,41 +85,45 @@ export function HeroSection() {
               </h1>
             </div>
             <p className="text-xl sm:text-2xl text-muted-foreground font-medium">
-              Your Voice in Nepal's Democratic Future
+              {t("heroSection.subtitle")}
             </p>
           </div>
 
           {/* Description */}
           <div className="max-w-3xl mx-auto space-y-4 bg-white/30 backdrop-blur-sm rounded-xl p-6 shadow-sm">
             <p className="text-lg text-foreground leading-relaxed font-medium">
-              Nepal's democracy is at a crossroads. This platform is where citizens shape the future, through ideas, debate, and action. From tackling corruption to rethinking elections, your voice can turn protest into progress.
+               {t("heroSection.description.p1")}
             </p>
             <p className="text-base text-foreground/90">
-              Born from the bold energy of Gen Z, and strengthened by the wisdom and support of experts, professionals, and concerned Nepalis of all ages and sectors, this movement is bigger than any one generation.
+               {t("heroSection.description.p2")}
             </p>
             <p className="text-base text-foreground/90">
-              This manifesto isn't just words, it's a roadmap for a just, accountable Nepal.
+              {t("heroSection.description.p3")}
             </p>
           </div>
 
           {/* Animated Text */}
           <div className="text-center space-y-4">
             <div className="text-2xl md:text-3xl font-semibold flex justify-center items-center gap-2">
-              <motion.span
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.5 }}
-                className="text-primary"
-              >
-                {words[index]}
-              </motion.span>
-              <span>it</span>
+              <AnimatePresence mode="wait">
+                {isLoaded && (
+                  <motion.span
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.5 }}
+                    className="text-primary font-nepali"
+                  >
+                    {words[index]}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+              {t("heroSection.animatedText") && <span>{t("heroSection.animatedText")}</span>}
             </div>
 
             <div className="text-lg md:text-xl font-bold">
-              let&apos;s make it real
+              {t("heroSection.animatedCTA")}
             </div>
           </div>
 
@@ -118,8 +134,8 @@ export function HeroSection() {
                 <Users className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <div className="text-2xl font-bold text-foreground">20+</div>
-                <div className="text-sm text-foreground/80">Reform Agendas</div>
+                <div className="text-2xl font-bold text-foreground">{t("heroSection.stats.agendas.count")}</div>
+                <div className="text-sm text-foreground/80">{t("heroSection.stats.agendas.label")}</div>
               </div>
             </div>
             <div className="flex items-center gap-2 text-center bg-white/40 backdrop-blur-sm rounded-lg px-4 py-2">
@@ -128,7 +144,7 @@ export function HeroSection() {
               </div>
               <div>
                 <div className="text-2xl font-bold text-foreground">∞</div>
-                <div className="text-sm text-foreground/80">Suggestions</div>
+                <div className="text-sm text-foreground/80">{t("heroSection.stats.suggestions.label")}</div>
               </div>
             </div>
             <div className="flex items-center gap-2 text-center bg-white/40 backdrop-blur-sm rounded-lg px-4 py-2">
@@ -136,8 +152,8 @@ export function HeroSection() {
                 <Vote className="h-5 w-5 text-accent" />
               </div>
               <div>
-                <div className="text-2xl font-bold text-foreground">100%</div>
-                <div className="text-sm text-foreground/80">Democratic</div>
+                <div className="text-2xl font-bold text-foreground">{t("heroSection.stats.democratic.count")}</div>
+                <div className="text-sm text-foreground/80">{t("heroSection.stats.democratic.label")}</div>
               </div>
             </div>
           </div>
@@ -167,7 +183,7 @@ export function HeroSection() {
                 className="relative z-10 px-8 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
               >
                 <Link href="mailto:suggestions@nepalreforms.com">
-                  Email Us
+                  {t("heroSection.buttons.email")}
                 </Link>
               </Button>
             </motion.div>
@@ -179,7 +195,7 @@ export function HeroSection() {
               onClick={scrollToAgendas}
               className="px-8 py-3 text-base font-medium bg-white/50 backdrop-blur-sm hover:bg-white/70 border-white/60"
             >
-              Explore Agendas
+              {t("heroSection.buttons.explore")}
               <ArrowDown className="ml-2 h-5 w-5" />
             </Button>
           </div>

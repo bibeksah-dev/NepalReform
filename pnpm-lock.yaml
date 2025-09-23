@@ -158,6 +158,9 @@ importers:
       next:
         specifier: 15.2.4
         version: 15.2.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      next-i18next:
+        specifier: ^15.4.2
+        version: 15.4.2(@types/react@19.0.0)(i18next@25.5.2(typescript@5.0.2))(next@15.2.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-i18next@15.7.3(i18next@25.5.2(typescript@5.0.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.0.2))(react@19.0.0)
       next-themes:
         specifier: latest
         version: 0.4.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1859,6 +1862,11 @@ packages:
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
+  '@types/hoist-non-react-statics@3.3.7':
+    resolution: {integrity: sha512-PQTyIulDkIDro8P+IHbKCsw7U2xxBYflVzW/FgWdCAePD9xGSidgA76/GeJ6lBKoblyhf9pBY763gbrN+1dI8g==}
+    peerDependencies:
+      '@types/react': '*'
+
   '@types/node@22.0.0':
     resolution: {integrity: sha512-VT7KSYudcPOzP5Q0wfbowyNLaVR8QWUdw+088uFWwfvpY6uCWaXpqV6ieLAu9WBcnTa7H4Z5RLK8I5t2FuOcqw==}
 
@@ -2081,6 +2089,9 @@ packages:
   cookie@1.0.2:
     resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
     engines: {node: '>=18'}
+
+  core-js@3.45.1:
+    resolution: {integrity: sha512-L4NPsJlCfZsPeXukyzHFlg/i7IIVwHSItR0wg0FLNqYClJ4MQYTYLbC7EkjKYRLZF2iof2MUgN0EGy7MdQFChg==}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -2336,6 +2347,9 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
+  hoist-non-react-statics@3.3.2:
+    resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
+
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
 
@@ -2351,6 +2365,9 @@ packages:
 
   i18next-browser-languagedetector@8.2.0:
     resolution: {integrity: sha512-P+3zEKLnOF0qmiesW383vsLdtQVyKtCNA9cjSoKCppTKPQVfKd2W8hbVo5ZhNJKDqeM7BOcvNoKJOjpHh4Js9g==}
+
+  i18next-fs-backend@2.6.0:
+    resolution: {integrity: sha512-3ZlhNoF9yxnM8pa8bWp5120/Ob6t4lVl1l/tbLmkml/ei3ud8IWySCHt2lrY5xWRlSU5D9IV2sm5bEbGuTqwTw==}
 
   i18next@25.5.2:
     resolution: {integrity: sha512-lW8Zeh37i/o0zVr+NoCHfNnfvVw+M6FQbRp36ZZ/NyHDJ3NJVpp2HhAUyU9WafL5AssymNoOjMRB48mmx2P6Hw==}
@@ -2563,6 +2580,15 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  next-i18next@15.4.2:
+    resolution: {integrity: sha512-zgRxWf7kdXtM686ecGIBQL+Bq0+DqAhRlasRZ3vVF0TmrNTWkVhs52n//oU3Fj5O7r/xOKkECDUwfOuXVwTK/g==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      i18next: '>= 23.7.13'
+      next: '>= 12.0.0'
+      react: '>= 17.0.2'
+      react-i18next: '>= 13.5.0'
+
   next-themes@0.4.6:
     resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
     peerDependencies:
@@ -2748,6 +2774,9 @@ packages:
         optional: true
       typescript:
         optional: true
+
+  react-is@16.13.1:
+    resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
@@ -4730,6 +4759,11 @@ snapshots:
   '@types/estree@1.0.8':
     optional: true
 
+  '@types/hoist-non-react-statics@3.3.7(@types/react@19.0.0)':
+    dependencies:
+      '@types/react': 19.0.0
+      hoist-non-react-statics: 3.3.2
+
   '@types/node@22.0.0':
     dependencies:
       undici-types: 6.11.1
@@ -4971,6 +5005,8 @@ snapshots:
     optional: true
 
   cookie@1.0.2: {}
+
+  core-js@3.45.1: {}
 
   cross-spawn@7.0.6:
     dependencies:
@@ -5216,6 +5252,10 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
+  hoist-non-react-statics@3.3.2:
+    dependencies:
+      react-is: 16.13.1
+
   html-escaper@2.0.2: {}
 
   html-parse-stringify@3.0.1:
@@ -5240,6 +5280,8 @@ snapshots:
   i18next-browser-languagedetector@8.2.0:
     dependencies:
       '@babel/runtime': 7.28.4
+
+  i18next-fs-backend@2.6.0: {}
 
   i18next@25.5.2(typescript@5.0.2):
     dependencies:
@@ -5407,6 +5449,20 @@ snapshots:
 
   nanoid@3.3.11: {}
 
+  next-i18next@15.4.2(@types/react@19.0.0)(i18next@25.5.2(typescript@5.0.2))(next@15.2.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-i18next@15.7.3(i18next@25.5.2(typescript@5.0.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.0.2))(react@19.0.0):
+    dependencies:
+      '@babel/runtime': 7.28.4
+      '@types/hoist-non-react-statics': 3.3.7(@types/react@19.0.0)
+      core-js: 3.45.1
+      hoist-non-react-statics: 3.3.2
+      i18next: 25.5.2(typescript@5.0.2)
+      i18next-fs-backend: 2.6.0
+      next: 15.2.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      react: 19.0.0
+      react-i18next: 15.7.3(i18next@25.5.2(typescript@5.0.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.0.2)
+    transitivePeerDependencies:
+      - '@types/react'
+
   next-themes@0.4.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
       react: 19.0.0
@@ -5563,6 +5619,8 @@ snapshots:
     optionalDependencies:
       react-dom: 19.0.0(react@19.0.0)
       typescript: 5.0.2
+
+  react-is@16.13.1: {}
 
   react-is@18.3.1: {}
 

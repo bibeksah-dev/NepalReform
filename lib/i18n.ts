@@ -24,11 +24,13 @@ i18n
     resources: {
       en: {
         manifesto: {}, // Will be loaded dynamically
-        common: {}     // Will be loaded dynamically
+        common: {} ,    // Will be loaded dynamically
+        translation: {}
       },
       np: {
         manifesto: {}, // Will be loaded dynamically
-        common: {}     // Will be loaded dynamically
+        common: {},    // Will be loaded dynamically
+        translation: {}
       }
     }
   });
@@ -50,6 +52,8 @@ export async function loadManifestoData(language: string) {
 
 // Function to load common translations
 export async function loadCommonTranslations(language: string) {
+
+  console.log("Loading common translations for language:", language);
   try {
     const response = await fetch(`/locales/${language}/common.json`);
     const data = await response.json();
@@ -59,6 +63,22 @@ export async function loadCommonTranslations(language: string) {
     return data;
   } catch (error) {
     console.error(`Failed to load common translations for language: ${language}`, error);
+    return {};
+  }
+}
+
+// Function to load  translations
+export async function loadTranslations(language: string) {
+  console.log("Loading translations for language:", language);
+  try {
+    const response = await fetch(`/locales/${language}/translation.json`);
+    const data = await response.json();
+    
+    i18n.addResourceBundle(language, 'translation', data, true, true);
+    
+    return data;
+  } catch (error) {
+    console.error(`Failed to load translations for language: ${language}`, error);
     return {};
   }
 }

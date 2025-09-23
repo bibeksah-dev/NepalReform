@@ -108,6 +108,10 @@ export default function RootLayout({
         <meta name="application-name" content="Nepal Reforms" />
         <meta name="msapplication-TileColor" content="#000000" />
         <meta name="msapplication-TileImage" content="/nrlogo7.png" />
+           <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari&display=swap"
+      rel="stylesheet"
+    />
       </head>
       <body className="font-sans antialiased">
         <Providers>

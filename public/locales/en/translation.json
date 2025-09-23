@@ -1,0 +1,173 @@
+{
+  "login": {
+    "welcomeBack": "Welcome Back",
+    "signInDescription": "Sign in to your account to share and vote on opinions",
+    "emailAddress": "Email Address",
+    "password": "Password",
+    "signingIn": "Signing in...",
+    "signIn": "Sign In",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Please enter a valid email address",
+    "passwordRequired": "Password is required",
+    "invalidCredentials": "Invalid email or password. Please try again.",
+    "emailNotConfirmed": "Please check your email and confirm before signing in.",
+    "tooManyRequests": "Too many login attempts. Please wait and try again.",
+    "unexpectedError": "An unexpected error occurred. Please try again.",
+    "signedInSuccess": "You have been successfully signed in.",
+    "forgotPassword": "Forgot your password?",
+    "poweredBy": "Powered by"
+  },
+  "signup": {
+    "joinNepalReforms": "Join NepalReforms",
+    "createAccountDescription": "Create your account to start sharing opinions and engaging in democratic discourse.\nWe need your authentication only for the purpose of vote uniqueness.\nWe do not store any of your data in simple text.",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Your full name",
+    "emailAddress": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "creatingAccount": "Creating account...",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "poweredBy": "Powered by",
+
+    "errors": {
+      "fullNameRequired": "Full name is required",
+      "fullNameMin": "Full name must be at least 2 characters",
+      "emailRequired": "Email is required",
+      "invalidEmail": "Please enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordInvalid": "Password does not meet requirements",
+      "repeatPasswordRequired": "Please confirm your password",
+      "passwordMismatch": "Passwords do not match",
+      "emailExists": "An account with this email already exists",
+      "signupDisabled": "Registration is temporarily disabled. Please try again later.",
+      "unexpectedError": "An unexpected error occurred. Please try again."
+    },
+    "success": {
+      "accountCreated": "Account created successfully!",
+      "checkEmail": "Please check your email to verify your account."
+    },
+    "passwordsMatch": "Passwords match"
+  },
+  "signupSuccess": {
+    "welcome": "Welcome to NepalReforms!",
+    "checkEmail": "Check your email to confirm your account",
+    "successMessage": "You've successfully signed up. Please check your email to confirm your account before signing in.",
+    "backToLogin": "Back to Login"
+  },
+  "heroSection": {
+    
+    "subtitle": "Your Voice in Nepal's Democratic Future",
+    "description": {
+      "p1": "Nepal's democracy is at a crossroads. This platform is where citizens shape the future, through ideas, debate, and action. From tackling corruption to rethinking elections, your voice can turn protest into progress.",
+      "p2": "Born from the bold energy of Gen Z, and strengthened by the wisdom and support of experts, professionals, and concerned Nepalis of all ages and sectors, this movement is bigger than any one generation.",
+      "p3": "This manifesto isn't just words, it's a roadmap for a just, accountable Nepal."
+    },
+    "animatedWords": ["Read", "Challenge", "Improve"],
+    "animatedText": "it",
+    "animatedCTA": "let's make it real",
+    "stats": {
+      "agendas": {
+        "count": "20+",
+        "label": "Reform Agendas"
+      },
+      "suggestions": {
+        "count": "∞",
+        "label": "Suggestions"
+      },
+      "democratic": {
+        "count": "100%",
+        "label": "Democratic"
+      }
+    },
+    "buttons": {
+      "email": "Email Us",
+      "explore": "Explore Agendas"
+    },
+    "toast": {
+      "success": "Action completed successfully.",
+      "error": "Something went wrong. Please try again."
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Nepal Reform Manifesto",
+      "description": "Explore 27 comprehensive reform proposals for Nepal's democratic transformation. Each proposal includes detailed solutions, real-world evidence, implementation timelines, and performance targets based on international best practices."
+    },
+    "howToEngage": {
+      "title": "How to Engage:",
+      "steps": [
+        "Read the Reform Agendas listed below.",
+        "Explore the Full Manifesto — available in both English and Nepali (top right of this page).",
+        "Vote on the Reform Agendas to show your support.",
+        "Sign In to access the suggestion form if you notice something missing.",
+        "Email Us Your Feedback — compile your thoughts and send them to: suggestions@nepalreforms.com",
+        "Spread the Word — share this platform with your friends, family, neighbors, and colleagues."
+      ]
+    }
+  },
+  "opinionCreation":{
+    "createOpinionTitle": "Create New Agenda",
+    "createOpinionDescription": "Share your thoughts and proposals for Nepal's democratic reforms. Your opinion will be reviewed before being published.",
+    "shareYourAgenda": "Share Your Agenda",
+    "agendaTitle": "Agenda Title *",
+    "agendaTitlePlaceholder": "Enter a clear, descriptive title for your opinion",
+    "category": "Category *",
+    "categories": [
+    "Governance",
+    "Democracy",
+    "Justice",
+    "Federalism",
+    "Administration",
+    "Economy",
+    "Education",
+    "Healthcare",
+    "Infrastructure"
+  ],
+    "categoryPlaceholder": "Select a category",
+    "priorityLevels": [
+    "High Priority",
+    "Medium Priority",
+    "Low Priority"
+  ],
+    "priorityLevelPlaceholder":  "Priority Level *",
+    "problemStatement": "Problem Statement *",
+    "problemStatementPlaceholder": "Describe the problem or issue you want to address",
+    "detailedDescription": "Detailed Description *",
+    "detailedDescriptionPlaceholder": "Provide a comprehensive description of your opinion and reasoning",
+    "keyPoints": "Key Points",
+    "keyPointsPlaceholder": "Enter a key point or argument",
+    "add": "Add",
+    "proposedSolutions": "Proposed Solutions",
+    "proposedSolutionsPlaceholder": "Describe a potential solution or approach",
+    "expectedOutcomes": "Expected Outcomes",
+    "expectedOutcomesPlaceholder": "What positive outcomes do you expect?",
+    "implementationTimeline": "Implementation Timeline",
+    "implementationTimelinePlaceholder": "Describe the proposed timeline for implementation",
+    "keyStakeholders": "Key Stakeholders",
+    "keyStakeholdersPlaceholder": "Who are the key stakeholders involved?",
+    "tags": "Tags",
+    "tagsPlaceholder": "Add a tag",
+    "references": "References",
+    "referencesPlaceholder": "Add a reference URL or citation",
+    "cancel": "Cancel",
+    "submitOpinion": "Submit Opinion",
+    "submitting": "Submitting...",
+    "successMessage": "Opinion submitted successfully! It will be reviewed before publication.",
+    "errorMessage": "Failed to submit opinion. Please try again."
+  },
+   "userDashboard": {
+    "loading": "Loading your dashboard...",
+    "tabs": {
+      "overview": "Overview",
+      "activity": "My Activity",
+      "profile": "Profile",
+      "settings": "Settings"
+    },
+    "unknownAgenda": "Unknown Agenda",
+    "signOut": "Sign Out"
+  }
+}
