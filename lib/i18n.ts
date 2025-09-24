@@ -2,13 +2,20 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+// Detect language from localStorage synchronously before init
+let initialLang = 'en';
+if (typeof window !== 'undefined') {
+  const savedLang = localStorage.getItem('i18nextLng');
+  if (savedLang) initialLang = savedLang;
+}
+
 // Initialize i18n
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     fallbackLng: 'en',
-    lng: 'en', // default language
+    lng: initialLang, // use detected or saved language
     debug: false,
     supportedLngs: ['en', 'np'],
     
@@ -81,6 +88,15 @@ export async function loadTranslations(language: string) {
     console.error(`Failed to load translations for language: ${language}`, error);
     return {};
   }
+}
+
+export function formatNumber(num: number, lang: string) {
+  if (lang.startsWith("np")) {
+    // Manual mapping for Nepali numerals
+    const nepaliDigits = ['०','१','२','३','४','५','६','७','८','९'];
+    return num.toString().split('').map(d => /\d/.test(d) ? nepaliDigits[+d] : d).join('');
+  }
+  return new Intl.NumberFormat("en-US").format(num);
 }
 
 export default i18n;

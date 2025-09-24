@@ -12,6 +12,8 @@ import { UserIcon, FileText, MessageSquare, ThumbsUp, ThumbsDown, Plus, Trending
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { CacheStatus } from "@/components/cache-status"
+import { useTranslation } from "react-i18next"
+import { formatNumber } from "@/lib/i18n"
 
 interface UserDashboardProps {
   user: User
@@ -45,6 +47,7 @@ export function UserDashboard({ user }: UserDashboardProps) {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const supabase = createClient()
+  const {t, i18n} = useTranslation("translation")
 
   useEffect(() => {
     fetchUserStats()
@@ -142,7 +145,7 @@ export function UserDashboard({ user }: UserDashboardProps) {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading your dashboard...</p>
+          <p className="text-muted-foreground">{t('userDashboard.loading')}</p>
         </div>
       </div>
     )
@@ -183,19 +186,19 @@ export function UserDashboard({ user }: UserDashboardProps) {
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
-              Overview
+              {t("userDashboard.tabs.overview")}
             </TabsTrigger>
             <TabsTrigger value="activity" className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
-              My Activity
+              {t("userDashboard.tabs.activity")}
             </TabsTrigger>
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <UserIcon className="h-4 w-4" />
-              Profile
+              {t("userDashboard.tabs.profile")}
             </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
-              Settings
+              {t("userDashboard.tabs.settings")}
             </TabsTrigger>
           </TabsList>
 
@@ -203,10 +206,9 @@ export function UserDashboard({ user }: UserDashboardProps) {
             {/* Welcome Section */}
             <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
               <CardHeader>
-                <CardTitle className="text-2xl">Welcome back, {getDisplayName()}!</CardTitle>
+                <CardTitle className="text-2xl">{t("userDashboard.overview.welcome")} {getDisplayName()}!</CardTitle>
                 <CardDescription className="text-base">
-                  Thank you for being part of Nepal's democratic reform movement. Your voice matters in shaping our
-                  nation's future.
+                  {t("userDashboard.overview.welcomeDescription")}
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -215,47 +217,47 @@ export function UserDashboard({ user }: UserDashboardProps) {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">My Votes</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t("userDashboard.overview.myVotes")}</CardTitle>
                   <ThumbsUp className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.votesCount}</div>
-                  <p className="text-xs text-muted-foreground">Total votes cast</p>
+                  <div className="text-2xl font-bold">{formatNumber(stats.votesCount, i18n.language)}</div>
+                  <p className="text-xs text-muted-foreground">{t("userDashboard.overview.myVotesDesc")}</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">My Suggestions</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t("userDashboard.overview.mySuggestions")}</CardTitle>
                   <MessageSquare className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.suggestionsCount}</div>
-                  <p className="text-xs text-muted-foreground">Ideas shared</p>
+                  <div className="text-2xl font-bold"> {formatNumber(stats.suggestionsCount, i18n.language)}</div>
+                  <p className="text-xs text-muted-foreground">{t("userDashboard.overview.mySuggestionsDesc")}</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Impact Score</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t("userDashboard.overview.impactScore")}</CardTitle>
                   <TrendingUp className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.votesCount + stats.suggestionsCount * 2}</div>
-                  <p className="text-xs text-muted-foreground">Engagement points</p>
+                  <div className="text-2xl font-bold">{formatNumber(stats.votesCount + stats.suggestionsCount * 2, i18n.language)}</div>
+                  <p className="text-xs text-muted-foreground">{t("userDashboard.overview.engagementPoints")}</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Member Since</CardTitle>
+                  <CardTitle className="text-sm font-medium">{t("userDashboard.overview.memberSince")}</CardTitle>
                   <UserIcon className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
                     {new Date(user.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
                   </div>
-                  <p className="text-xs text-muted-foreground">Join date</p>
+                  <p className="text-xs text-muted-foreground">{t("userDashboard.overview.memberSinceDesc")}</p>
                 </CardContent>
               </Card>
             </div>
@@ -263,16 +265,16 @@ export function UserDashboard({ user }: UserDashboardProps) {
             {/* Quick Actions */}
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Get involved in Nepal's reform discussions</CardDescription>
+                <CardTitle>{t("userDashboard.overview.quickActions")}</CardTitle>
+                <CardDescription>{t("userDashboard.overview.quickActionsDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="grid gap-3 md:grid-cols-3">
                 <Button className="justify-start h-auto p-4" onClick={() => router.push("/create-opinion")}>
                   <div className="flex items-center gap-3">
                     <Plus className="h-5 w-5" />
                     <div className="text-left">
-                      <div className="font-medium">Create Opinion</div>
-                      <div className="text-sm text-muted-foreground">Share your reform ideas</div>
+                      <div className="font-medium">{t("userDashboard.overview.createOpinion")}</div>
+                      <div className="text-sm text-muted-foreground">{t("userDashboard.overview.createOpinionDesc")}</div>
                     </div>
                   </div>
                 </Button>
@@ -284,8 +286,8 @@ export function UserDashboard({ user }: UserDashboardProps) {
                   <div className="flex items-center gap-3">
                     <FileText className="h-5 w-5" />
                     <div className="text-left">
-                      <div className="font-medium">Explore Agendas</div>
-                      <div className="text-sm text-muted-foreground">View and vote on reform proposals</div>
+                      <div className="font-medium">{t("userDashboard.overview.exploreAgendas")}</div>
+                      <div className="text-sm text-muted-foreground">{t("userDashboard.overview.exploreAgendasDesc")}</div>
                     </div>
                   </div>
                 </Button>
@@ -297,8 +299,8 @@ export function UserDashboard({ user }: UserDashboardProps) {
                   <div className="flex items-center gap-3">
                     <MessageSquare className="h-5 w-5" />
                     <div className="text-left">
-                      <div className="font-medium">Share Ideas</div>
-                      <div className="text-sm text-muted-foreground">Contribute suggestions to agendas</div>
+                      <div className="font-medium">{t("userDashboard.overview.shareIdeas")}</div>
+                      <div className="text-sm text-muted-foreground">{t("userDashboard.overview.shareIdeasDesc")}</div>
                     </div>
                   </div>
                 </Button>
@@ -311,8 +313,8 @@ export function UserDashboard({ user }: UserDashboardProps) {
               {/* Recent Votes */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Recent Votes</CardTitle>
-                  <CardDescription>Your latest voting activity</CardDescription>
+                  <CardTitle>{t("userDashboard.activity.recentVotes")}</CardTitle>
+                  <CardDescription>{t("userDashboard.activity.recentVotesDesc")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {stats.recentVotes.length > 0 ? (
@@ -334,7 +336,7 @@ export function UserDashboard({ user }: UserDashboardProps) {
                     ))
                   ) : (
                     <p className="text-sm text-muted-foreground text-center py-4">
-                      No votes yet. Start by exploring agendas!
+                      {t("userDashboard.activity.noVotes")}
                     </p>
                   )}
                 </CardContent>
@@ -343,8 +345,8 @@ export function UserDashboard({ user }: UserDashboardProps) {
               {/* Recent Suggestions */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Recent Suggestions</CardTitle>
-                  <CardDescription>Your latest contributions</CardDescription>
+                  <CardTitle> {t("userDashboard.activity.recentSuggestions")}</CardTitle>
+                  <CardDescription>{t("userDashboard.activity.recentSuggestionsDesc")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {stats.recentSuggestions.length > 0 ? (
@@ -359,7 +361,7 @@ export function UserDashboard({ user }: UserDashboardProps) {
                     ))
                   ) : (
                     <p className="text-sm text-muted-foreground text-center py-4">
-                      No suggestions yet. Share your ideas on reform agendas!
+                      {t("userDashboard.activity.noSuggestions")}
                     </p>
                   )}
                 </CardContent>
@@ -370,8 +372,8 @@ export function UserDashboard({ user }: UserDashboardProps) {
           <TabsContent value="profile" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Profile Information</CardTitle>
-                <CardDescription>Your account details</CardDescription>
+                <CardTitle>{t('userDashboard.profile.profileInfo')}</CardTitle>
+                <CardDescription>{t("userDashboard.profile.profileDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-4">
@@ -381,35 +383,35 @@ export function UserDashboard({ user }: UserDashboardProps) {
                   <div>
                     <h3 className="text-lg font-medium">{getDisplayName()}</h3>
                     <p className="text-sm text-muted-foreground">{user.email}</p>
-                    <p className="text-xs text-muted-foreground">Member since {formatDate(user.created_at)}</p>
+                    <p className="text-xs text-muted-foreground">{t("userDashboard.profile.memberSince")} {formatDate(user.created_at)}</p>
                   </div>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2 pt-4 border-t">
                   <div>
-                    <label className="text-sm font-medium">Display Name</label>
+                    <label className="text-sm font-medium">{t("userDashboard.profile.displayName")}</label>
                     <p className="text-sm text-muted-foreground">{getDisplayName()}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Email</label>
+                    <label className="text-sm font-medium">{t("userDashboard.profile.email")}</label>
                     <p className="text-sm text-muted-foreground">{user.email}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Role</label>
-                    <p className="text-sm text-muted-foreground">Citizen</p>
+                    <label className="text-sm font-medium">{t("userDashboard.profile.role")}</label>
+                    <p className="text-sm text-muted-foreground">{t("userDashboard.profile.citizen")}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Total Contributions</label>
+                    <label className="text-sm font-medium">{t("userDashboard.profile.totalContributions")}</label>
                     <p className="text-sm text-muted-foreground">{stats.votesCount + stats.suggestionsCount} actions</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Account Status</label>
+                    <label className="text-sm font-medium">{t("userDashboard.profile.accountStatus")}</label>
                     <Badge variant="default" className="text-xs">
-                      {user.email_confirmed_at ? 'Verified' : 'Pending Verification'}
+                      {user.email_confirmed_at ? t('userDashboard.profile.verified') : t('userDashboard.profile.pendingVerification')}
                     </Badge>
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Last Sign In</label>
+                    <label className="text-sm font-medium">{t("userDashboard.profile.lastSignIn")}</label>
                     <p className="text-sm text-muted-foreground">
                       {user.last_sign_in_at ? formatDate(user.last_sign_in_at) : 'Never'}
                     </p>
@@ -424,40 +426,40 @@ export function UserDashboard({ user }: UserDashboardProps) {
               {/* Account Settings */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Account Settings</CardTitle>
-                  <CardDescription>Manage your account preferences</CardDescription>
+                  <CardTitle>{t("userDashboard.settings.accountSettings")}</CardTitle>
+                  <CardDescription>{t("userDashboard.settings.accountSettingsDesc")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium">Email Verification</label>
+                      <label className="text-sm font-medium">{t("userDashboard.settings.emailVerification")}</label>
                       <Badge variant={user.email_confirmed_at ? "default" : "secondary"} className="text-xs">
-                        {user.email_confirmed_at ? 'Verified' : 'Unverified'}
+                        {user.email_confirmed_at ? t('userDashboard.profile.verified') : t('userDashboard.profile.pendingVerification')}
                       </Badge>
                     </div>
                     {!user.email_confirmed_at && (
                       <p className="text-xs text-muted-foreground">
-                        Check your email for a verification link
+                        {t("userDashboard.settings.checkEmail")}
                       </p>
                     )}
                   </div>
                   
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium">Two-Factor Authentication</label>
-                      <Badge variant="outline" className="text-xs">Not Available</Badge>
+                      <label className="text-sm font-medium">{t("userDashboard.settings.twoFactor")}</label>
+                      <Badge variant="outline" className="text-xs">{t("userDashboard.settings.notAvailable")}</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Coming soon for enhanced security
+                      {t("userDashboard.settings.comingSoon")}
                     </p>
                   </div>
 
                   <div className="pt-4 border-t space-y-2">
                     <Button variant="outline" className="w-full" size="sm">
-                      Change Password
+                      {t("userDashboard.settings.changePassword")}
                     </Button>
                     <Button variant="outline" className="w-full" size="sm">
-                      Update Profile
+                      {t("userDashboard.settings.updateProfile")}
                     </Button>
                   </div>
                 </CardContent>
@@ -469,27 +471,27 @@ export function UserDashboard({ user }: UserDashboardProps) {
               {/* App Information */}
               <Card>
                 <CardHeader>
-                  <CardTitle>App Information</CardTitle>
-                  <CardDescription>Nepal Reforms Platform details</CardDescription>
+                  <CardTitle>{t("userDashboard.settings.appInfo")}</CardTitle>
+                  <CardDescription>{t("userDashboard.settings.appInfoDesc")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid gap-4">
                     <div>
-                      <label className="text-sm font-medium">Version</label>
+                      <label className="text-sm font-medium">{t("userDashboard.settings.version")}</label>
                       <p className="text-sm text-muted-foreground">1.0.0</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium">Last Updated</label>
+                      <label className="text-sm font-medium">{t("userDashboard.settings.lastUpdated")}</label>
                       <p className="text-sm text-muted-foreground">{new Date().toLocaleDateString()}</p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium">PWA Status</label>
-                      <Badge variant="outline" className="text-xs mt-1">Ready to Install</Badge>
+                      <label className="text-sm font-medium">{t("userDashboard.settings.pwaStatus")}</label>
+                      <Badge variant="outline" className="text-xs mt-1">{t("userDashboard.settings.readyToInstall")}</Badge>
                     </div>
                     <div>
-                      <label className="text-sm font-medium">Service Worker</label>
+                      <label className="text-sm font-medium">{t("userDashboard.settings.serviceWorker")}</label>
                       <Badge variant="outline" className="text-xs mt-1">
-                        {typeof window !== 'undefined' && 'serviceWorker' in navigator ? 'Supported' : 'Not Supported'}
+                        {typeof window !== 'undefined' && 'serviceWorker' in navigator ? t("userDashboard.settings.supported") : t("userDashboard.settings.notSupported")}
                       </Badge>
                     </div>
                   </div>
@@ -499,33 +501,33 @@ export function UserDashboard({ user }: UserDashboardProps) {
               {/* Privacy Settings */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Privacy & Data</CardTitle>
-                  <CardDescription>Control your data and privacy</CardDescription>
+                  <CardTitle>{t("userDashboard.settings.privacyData")}</CardTitle>
+                  <CardDescription>{t("userDashboard.settings.privacyDataDesc")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium">Data Storage</label>
-                      <span className="text-sm text-muted-foreground">Local + Cloud</span>
+                      <label className="text-sm font-medium">{t("userDashboard.settings.dataStorage")}</label>
+                      <span className="text-sm text-muted-foreground">{t("userDashboard.settings.localCloud")}</span>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Your data is stored locally for performance and backed up to the cloud
+                      {t("userDashboard.settings.dataStorageDesc")}
                     </p>
                   </div>
                   
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium">Encryption</label>
-                      <Badge variant="default" className="text-xs">Enabled</Badge>
+                      <label className="text-sm font-medium">{t("userDashboard.settings.encryption")}</label>
+                      <Badge variant="default" className="text-xs">{t("userDashboard.settings.enabled")}</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      All data transfers are encrypted using HTTPS
+                      {t("userDashboard.settings.encryptionDesc")}
                     </p>
                   </div>
 
                   <div className="pt-4 border-t">
                     <Button variant="outline" className="w-full" onClick={() => window.open('/privacy', '_blank')}>
-                      View Privacy Policy
+                      {t("userDashboard.settings.privacyPolicy")}
                     </Button>
                   </div>
                 </CardContent>

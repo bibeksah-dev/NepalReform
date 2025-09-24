@@ -167,7 +167,109 @@
       "profile": "Profile",
       "settings": "Settings"
     },
+    "overview": {
+      "welcome": "Welcome back, ",
+      "welcomeDescription": "Thank you for being part of Nepal's democratic reform movement. Your voice matters in shaping our nation's future.",
+      "myVotes": "My Votes",
+      "myVotesDesc": "Total votes cast",
+      "mySuggestions": "My Suggestions",
+      "mySuggestionsDesc": "Ideas shared",
+      "impactScore": "Impact Score",
+      "impactScoreDesc": "Engagement points",
+      "memberSince": "Member Since",
+      "memberSinceDesc": "Join date",
+      "quickActions": "Quick Actions",
+      "quickActionsDesc": "Get involved in Nepal's reform discussions",
+      "createOpinion": "Create Opinion",
+      "createOpinionDesc": "Share your reform ideas",
+      "exploreAgendas": "Explore Agendas",
+      "exploreAgendasDesc": "View and vote on reform proposals",
+      "shareIdeas": "Share Ideas",
+      "shareIdeasDesc": "Contribute suggestions to agendas"
+    },
+    "activity": {
+      "recentVotes": "Recent Votes",
+      "recentVotesDesc": "Your latest voting activity",
+      "noVotes": "No votes yet. Start by exploring agendas!",
+      "recentSuggestions": "Recent Suggestions",
+      "recentSuggestionsDesc": "Your latest contributions",
+      "noSuggestions": "No suggestions yet. Share your ideas on reform agendas!"
+    },
+    "profile": {
+      "profileInfo": "Profile Information",
+      "profileDesc": "Your account details",
+      "displayName": "Display Name",
+      "email": "Email",
+      "role": "Role",
+      "citizen": "Citizen",
+      "totalContributions": "Total Contributions",
+      "accountStatus": "Account Status",
+      "verified": "Verified",
+      "pendingVerification": "Pending Verification",
+      "lastSignIn": "Last Sign In",
+      "memberSince": "Member since"
+    },
+    "settings": {
+      "accountSettings": "Account Settings",
+      "accountSettingsDesc": "Manage your account preferences",
+      "emailVerification": "Email Verification",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "checkEmail": "Check your email for a verification link",
+      "twoFactor": "Two-Factor Authentication",
+      "notAvailable": "Not Available",
+      "comingSoon": "Coming soon for enhanced security",
+      "changePassword": "Change Password",
+      "updateProfile": "Update Profile",
+      "appInfo": "App Information",
+      "appInfoDesc": "Nepal Reforms Platform details",
+      "version": "Version",
+      "lastUpdated": "Last Updated",
+      "pwaStatus": "PWA Status",
+      "readyToInstall": "Ready to Install",
+      "serviceWorker": "Service Worker",
+      "supported": "Supported",
+      "notSupported": "Not Supported",
+      "privacyData": "Privacy & Data",
+      "privacyDataDesc": "Control your data and privacy",
+      "dataStorage": "Data Storage",
+      "localCloud": "Local + Cloud",
+      "dataStorageDesc": "Your data is stored locally for performance and backed up to the cloud",
+      "encryption": "Encryption",
+      "enabled": "Enabled",
+      "encryptionDesc": "All data transfers are encrypted using HTTPS",
+      "privacyPolicy": "View Privacy Policy"
+    },
     "unknownAgenda": "Unknown Agenda",
     "signOut": "Sign Out"
+  },
+   "cacheStatus": {
+    "title": "Cache Status",
+    "offlineCache": {
+      "title": "About Offline Cache",
+      "description": [
+        "Your Nepal Reforms data is cached locally for faster loading and offline access.",
+        "This includes:"
+      ],
+      "list": [
+        "All 27 reform proposals",
+        "Your votes and preferences",
+        "Suggestions you've made",
+        "Filter settings"
+      ],
+      "note": "Data automatically syncs when you're online. Clear cache if you experience any issues."
+    },
+    "cacheUsage": "Cache Usage",
+    "local": "Local:",
+    "indexedDB": "IndexedDB:",
+    "cachedItems": " cached items",
+    "clearChaceButton": "Clear Cache",
+    "clearCache": {
+      "title": "Clear Cache?",
+      "description": "This will remove all cached data from your browser. The app will reload and fetch fresh data. Your account data and votes stored on the server will not be affected.",
+      "cancel": "Cancel",
+      "confirm": "Clear Cache"
+    },
+    "offlineMode": "Offline Mode - Changes will sync when online"
   }
 }
