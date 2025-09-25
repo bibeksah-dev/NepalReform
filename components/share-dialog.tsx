@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
 import { Share2, Copy, Facebook, Twitter, Linkedin, MessageCircle, Instagram, Mail } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 interface ShareDialogProps {
   title: string
@@ -28,6 +29,7 @@ export function ShareDialog({ title, description, url, children }: ShareDialogPr
   const [isOpen, setIsOpen] = useState(false)
   const shareUrl = url || (typeof window !== "undefined" ? window.location.href : "")
   const shareText = `Check out this reform proposal: ${title}`
+  const { t } = useTranslation('common')
 
   const copyToClipboard = async () => {
     try {
@@ -87,7 +89,7 @@ export function ShareDialog({ title, description, url, children }: ShareDialogPr
         {children || (
           <Button className="w-full" size="sm">
             <Share2 className="h-4 w-4 mr-2" />
-            Share This Reform
+            {t('actions.shareThisReform')}
           </Button>
         )}
       </DialogTrigger>
@@ -95,17 +97,17 @@ export function ShareDialog({ title, description, url, children }: ShareDialogPr
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Share2 className="h-5 w-5" />
-            Share This Reform
+            {t('actions.shareThisReform')}
           </DialogTitle>
           <DialogDescription>
-            Help spread awareness about this reform proposal and contribute to Nepal's democratic transformation.
+            {t('descriptions.shareHelp')}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           {/* Copy Link Section */}
           <div className="space-y-2">
-            <Label htmlFor="share-url">Share Link</Label>
+            <Label htmlFor="share-url">{t('sections.shareLink')}</Label>
             <div className="flex gap-2">
               <Input id="share-url" value={shareUrl} readOnly className="flex-1" />
               <Button type="button" size="sm" onClick={copyToClipboard} className="px-3">

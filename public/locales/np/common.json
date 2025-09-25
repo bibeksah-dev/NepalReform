@@ -1,5 +1,17 @@
 {
   "nav": {
+      "home": "गृहपृष्ठ",
+    "reforms": "२७ सुधारहरू",
+    "testimonials": "प्रशंसापत्रहरू",
+    "createAgenda": "एजेन्डा सिर्जना गर्नुहोस्",
+    "createOpinion": "मत सिर्जना गर्नुहोस्",
+    "profile": "प्रोफाइल",
+    "downloadManifesto": "घोषणापत्र डाउनलोड गर्नुहोस्",
+    "downloadFullManifesto": "पूरा घोषणापत्र डाउनलोड गर्नुहोस्:",
+    "english": "अंग्रेजी",
+    "nepali": "नेपाली",
+    "signIn": "लगइन गर्नुहोस्",
+    "signOut": "लगआउट गर्नुहोस्",
     "backToReforms": "सबै सुधारहरूमा फर्किनुहोस्",
     "previousReform": "अघिल्लो सुधार",
     "nextReform": "अर्को सुधार",
@@ -43,7 +55,8 @@
     "communitySuggestions": "समुदाय सुझावहरू",
     "publicSupport": "सार्वजनिक समर्थन",
     "shareAndEngage": "साझा गर्नुहोस् र संलग्न हुनुहोस्",
-    "implementationOverview": "कार्यान्वयन सिंहावलोकन"
+    "implementationOverview": "कार्यान्वयन सिंहावलोकन",
+    "shareLink": "लिङ्क साझा गर्नुहोस्"
   },
   "actions": {
     "showMore": "थप देखाउनुहोस्",
@@ -52,7 +65,8 @@
     "vote": "मतदान",
     "share": "साझा गर्नुहोस्",
     "moreSolutions": "+ थप समाधानहरू...",
-    "moreTargets": "+ थप"
+    "moreTargets": "+ थप",
+    "shareThisReform": "यस सुधारलाई साझा गर्नुहोस्"
   },
   "descriptions": {
     "communityFeedback": "यस सुधार प्रस्तावमा आफ्ना विचार र प्रतिक्रिया साझा गर्नुहोस्। अन्य नागरिकहरूका सुझावहरूमा मतदान गरेर समुदायसँग संलग्न हुनुहोस्।",

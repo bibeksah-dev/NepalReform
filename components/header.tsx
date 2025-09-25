@@ -12,6 +12,7 @@ import { motion } from "framer-motion"
 import { ClientOnly } from "@/components/client-only"
 import { useHydration } from "@/hooks/use-hydration"
 import { LanguageToggle } from "@/components/language-toggle"
+import { useTranslation } from "react-i18next"
 
 // Locally define Supabase's AuthChangeEvent type union (from internal source)
 type AuthChangeEvent =
@@ -39,6 +40,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const isHydrated = useHydration()
   const supabase = createClient()
+  const { t } = useTranslation('common')
 
   useEffect(() => {
     if (!isHydrated) return
@@ -97,14 +99,14 @@ export function Header() {
         </Avatar>
         <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-sm">
           <LogOut className="h-4 w-4 mr-2" />
-          Sign Out
+         {t('nav.signOut')}
         </Button>
       </div>
     ) : (
       <Button asChild size="sm">
         <Link href="/auth/login">
           <User className="h-4 w-4 mr-2" />
-          Sign In
+          {t('nav.signIn')}
         </Link>
       </Button>
     )
@@ -128,14 +130,14 @@ export function Header() {
         </div>
         <Button variant="ghost" size="sm" onClick={handleSignOut} className="w-full justify-start">
           <LogOut className="h-4 w-4 mr-2" />
-          Sign Out
+          {t('nav.signOut')}
         </Button>
       </div>
     ) : (
       <Button asChild size="sm" className="w-full">
         <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
           <User className="h-4 w-4 mr-2" />
-          Sign In
+          {t('nav.signIn')}
         </Link>
       </Button>
     )
@@ -170,21 +172,21 @@ export function Header() {
                 className="flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
               >
                 <Home className="h-4 w-4" />
-                Home
+                {t('nav.home')}
               </Link>
               <Link
                 href="/#agendas-section"
                 className="flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
               >
                 <BookOpen className="h-4 w-4" />
-                27 Reforms
+                {t('nav.reforms')}
               </Link>
               <Link
                 href="/testimonials"
                 className="flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
               >
                 <Quote className="h-4 w-4" />
-                Testimonials
+                {t('nav.testimonials')}
               </Link>
               
               <ClientOnly fallback={<div className="w-32 h-4" />}>
@@ -194,13 +196,13 @@ export function Header() {
                       href="/create-opinion"
                       className="text-sm font-medium text-foreground hover:text-primary transition-colors"
                     >
-                      Create Agenda
+                      {t('nav.createAgenda')}
                     </Link>
                     <Link
                       href="/profile"
                       className="text-sm font-medium text-foreground hover:text-primary transition-colors"
                     >
-                      Profile
+                      {t('nav.profile')}
                     </Link>
                   </>
                 )}
@@ -229,7 +231,7 @@ export function Header() {
                       className="relative z-10 text-sm font-medium bg-gray-600 text-white hover:bg-gray-800"
                     >
                       <Download className="h-4 w-4 mr-2" />
-                      Download Manifesto
+                      {t('nav.downloadManifesto')}
                       <ChevronDown className="h-4 w-4 ml-2" />
                     </Button>
                   </motion.div>
@@ -242,7 +244,7 @@ export function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleDownloadNepali} className="cursor-pointer">
                     <Download className="h-4 w-4 mr-2" />
-                    Nepali
+                    नेपाली
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -269,7 +271,7 @@ export function Header() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <Home className="h-4 w-4" />
-                  Home
+                  {t('nav.home')}
                 </Link>
                 <Link
                   href="/#agendas-section"
@@ -277,7 +279,7 @@ export function Header() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <BookOpen className="h-4 w-4" />
-                  27 Reforms
+                  {t('nav.reforms')}
                 </Link>
                 <Link
                   href="/testimonials"
@@ -285,7 +287,7 @@ export function Header() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <Quote className="h-4 w-4" />
-                  Testimonials
+                  {t('nav.testimonials')}
                 </Link>
                 
                 <ClientOnly>
@@ -296,21 +298,21 @@ export function Header() {
                         className="block text-sm font-medium text-foreground hover:text-primary transition-colors"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        Create Opinion
+                        {t('nav.createOpinion')}
                       </Link>
                       <Link
                         href="/profile"
                         className="block text-sm font-medium text-foreground hover:text-primary transition-colors"
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        Profile
+                        {t('nav.profile')}
                       </Link>
                     </>
                   )}
                 </ClientOnly>
                 
                 <div className="space-y-2 pt-2 border-t">
-                  <p className="text-sm font-medium text-foreground">Download Full Manifesto:</p>
+                  <p className="text-sm font-medium text-foreground">{t('nav.downloadFullManifesto')}</p>
                   <Button
                     variant="outline"
                     size="sm"
@@ -333,7 +335,7 @@ export function Header() {
                     className="w-full justify-start"
                   >
                     <Download className="h-4 w-4 mr-2" />
-                    Nepali
+                    नेपाली
                   </Button>
                 </div>
               </nav>

@@ -6,6 +6,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, TrendingUp, Users, AlertCircle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { ClientOnly } from "@/components/client-only"
+import { useTranslation } from "react-i18next"
+import { formatNumber } from "@/lib/i18n"
 
 interface AgendaVoteSectionProps {
   agendaId: string
@@ -14,6 +16,7 @@ interface AgendaVoteSectionProps {
 }
 
 export function AgendaVoteSection({ agendaId, className, size = "sm" }: AgendaVoteSectionProps) {
+  const { t,i18n } = useTranslation('translation')
   const { voteData, handleVote, isLoading, error } = useAgendaVotes(agendaId)
 
   const onVote = async (itemId: string, voteType: "like" | "dislike") => {
@@ -41,7 +44,6 @@ export function AgendaVoteSection({ agendaId, className, size = "sm" }: AgendaVo
       </div>
     </div>
   )
-
   return (
     <div className={className}>
       <ClientOnly fallback={<VotingSectionFallback />}>
@@ -68,7 +70,7 @@ export function AgendaVoteSection({ agendaId, className, size = "sm" }: AgendaVo
             {isLoading && (
               <div className="flex items-center gap-1 text-muted-foreground">
                 <Loader2 className="h-3 w-3 animate-spin" />
-                <span className="text-xs">Updating...</span>
+                <span className="text-xs">{t("agendaVote.updating")}</span>
               </div>
             )}
           </div>
@@ -79,8 +81,8 @@ export function AgendaVoteSection({ agendaId, className, size = "sm" }: AgendaVo
               {/* Vote Bar Visualization */}
               <div className="w-full max-w-xs">
                 <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                  <span className="text-green-600 font-medium">{likePercentage}% like</span>
-                  <span className="text-red-600 font-medium">{dislikePercentage}% dislike</span>
+                  <span className="text-green-600 font-medium">{formatNumber(likePercentage, i18n.language)}% {t("agendaVote.like")}</span>
+                  <span className="text-red-600 font-medium">{formatNumber(dislikePercentage, i18n.language)}% {t("agendaVote.dislike")}</span>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden flex">
                   <div 
@@ -98,25 +100,25 @@ export function AgendaVoteSection({ agendaId, className, size = "sm" }: AgendaVo
               <div className="flex gap-2 flex-wrap">
                 <Badge variant="outline" className="text-xs">
                   <Users className="h-3 w-3 mr-1" />
-                  {totalVotes} vote{totalVotes !== 1 ? "s" : ""}
+                    {t("agendaVote.totalVotes", { count: totalVotes })} {formatNumber(Number(totalVotes), i18n.language)}
                 </Badge>
 
                 {isPopular && (
                   <Badge className="text-xs bg-green-100 text-green-700 border-green-200">
                     <TrendingUp className="h-3 w-3 mr-1" />
-                    Popular
+                    {t("agendaVote.popular")}
                   </Badge>
                 )}
 
                 {isControversial && (
                   <Badge className="text-xs bg-orange-100 text-orange-700 border-orange-200">
-                    ⚡ Controversial
+                    ⚡ {t("agendaVote.controversial")}
                   </Badge>
                 )}
 
                 {isHighlyEngaged && (
                   <Badge className="text-xs bg-blue-100 text-blue-700 border-blue-200">
-                    🔥 High Engagement
+                    🔥 {t("agendaVote.highEngagement")}
                   </Badge>
                 )}
               </div>
@@ -126,7 +128,7 @@ export function AgendaVoteSection({ agendaId, className, size = "sm" }: AgendaVo
           {/* No votes yet message */}
           {totalVotes === 0 && !isLoading && (
             <p className="text-xs text-muted-foreground italic">
-              Be the first to vote on this agenda!
+              {t("agendaVote.noVotesMessage")}
             </p>
           )}
         </div>

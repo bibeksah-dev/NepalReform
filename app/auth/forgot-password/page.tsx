@@ -12,6 +12,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { AlertCircle, CheckCircle, Mail, ArrowLeft } from "lucide-react"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
@@ -19,6 +20,7 @@ export default function ForgotPasswordPage() {
   const [isSuccess, setIsSuccess] = useState(false)
   const [errors, setErrors] = useState<{ email?: string; general?: string }>({})
   const [emailTouched, setEmailTouched] = useState(false)
+  const {t }= useTranslation('translation')
 
   const { resetPassword } = useAuth()
 
@@ -52,12 +54,12 @@ export default function ForgotPasswordPage() {
     e.preventDefault()
 
     if (!email) {
-      setErrors({ email: "Email is required" })
+      setErrors({ email:t('forgotPassword.emailRequired')})
       return
     }
 
     if (!validateEmail(email)) {
-      setErrors({ email: "Please enter a valid email address" })
+      setErrors({ email: t('forgotPassword.invalidEmail') })
       return
     }
 
@@ -69,22 +71,22 @@ export default function ForgotPasswordPage() {
 
       if (error) {
         if (error.message.includes('User not found')) {
-          setErrors({ email: 'No account found with this email address' })
+          setErrors({ email: t('forgotPassword.errorUserNotFound') })
         } else if (error.message.includes('Email rate limit exceeded')) {
-          setErrors({ general: 'Too many reset requests. Please wait before requesting again.' })
+          setErrors({ general: t('forgotPassword.errorRateLimit') })
         } else {
-          setErrors({ general: error.message })
+          setErrors({ general: t('forgotPassword.errorUnexpected') })
         }
         return
       }
 
       setIsSuccess(true)
-      toast.success('Password reset email sent!', {
-        description: 'Check your inbox for further instructions.',
+     toast.success(t('forgotPassword.toastSuccessTitle'), {
+         description: t('forgotPassword.toastSuccessDescription')
       })
     } catch (err) {
       console.error('Password reset error:', err)
-      setErrors({ general: 'An unexpected error occurred. Please try again.' })
+      setErrors({ general: t('forgotPassword.unexpectedError') })
     } finally {
       setIsLoading(false)
     }
@@ -99,18 +101,18 @@ export default function ForgotPasswordPage() {
               <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
-              <CardTitle className="text-2xl font-bold text-foreground">Check Your Email</CardTitle>
+              <CardTitle className="text-2xl font-bold text-foreground">{t('forgotPassword.checkEmailTitle')}</CardTitle>
               <CardDescription className="text-muted-foreground">
-                We've sent password reset instructions to your email address
+                {t('forgotPassword.checkEmailDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center space-y-6">
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  If an account with <strong>{email}</strong> exists, you will receive password reset instructions shortly.
+                  {t('forgotPassword.checkEmailInfo')} <strong>{email}</strong> {t('forgotPassword.checkEmailInfo2nd')}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Don't forget to check your spam folder!
+                  {t('forgotPassword.checkEmailSpam')}
                 </p>
               </div>
 
@@ -118,7 +120,7 @@ export default function ForgotPasswordPage() {
                 <Button asChild className="w-full h-12">
                   <Link href="/auth/login">
                     <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back to Login
+                    {t('forgotPassword.backToLogin')}
                   </Link>
                 </Button>
                 
@@ -132,7 +134,7 @@ export default function ForgotPasswordPage() {
                   }}
                   className="w-full h-12"
                 >
-                  Try Different Email
+                  {t('forgotPassword.tryDifferentEmail')}
                 </Button>
               </div>
             </CardContent>
@@ -150,16 +152,16 @@ export default function ForgotPasswordPage() {
             <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center">
               <img src="/nepal-flag-logo.png" alt="NepalReforms Logo" className="w-12 h-12 object-contain" />
             </div>
-            <CardTitle className="text-2xl font-bold text-foreground">Reset Password</CardTitle>
+            <CardTitle className="text-2xl font-bold text-foreground">{t('forgotPassword.resetPasswordTitle')}</CardTitle>
             <CardDescription className="text-muted-foreground">
-              Enter your email address and we'll send you instructions to reset your password
+              {t('forgotPassword.resetPasswordDescription')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleResetPassword} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
-                  Email Address
+                  {t('forgotPassword.emailLabel')}
                 </Label>
                 <div className="relative">
                   <Input
@@ -197,14 +199,14 @@ export default function ForgotPasswordPage() {
               )}
 
               <Button type="submit" className="w-full h-12 text-base font-medium" disabled={isLoading}>
-                {isLoading ? "Sending..." : "Send Reset Instructions"}
+                {isLoading ? t('forgotPassword.sending') : t('forgotPassword.sendInstructions')}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <Link href="/auth/login" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary">
                 <ArrowLeft className="w-4 h-4 mr-1" />
-                Back to Login
+                {t('forgotPassword.backToLogin')}
               </Link>
             </div>
           </CardContent>

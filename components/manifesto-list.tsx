@@ -22,6 +22,8 @@ import { useVotes } from "@/hooks/use-cached-data"
 import { CacheManager } from "@/lib/cache/cache-manager"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useManifestoData, ManifestoItem } from "@/hooks/use-manifesto-data"
+import { useTranslation } from "react-i18next"
+import { formatNumber } from "@/lib/i18n"
 
 // Define Vote interface locally
 interface Vote {
@@ -39,6 +41,8 @@ interface FilterState {
 }
 
 export function ManifestoList() {
+  const { t:trans } = useTranslation('translation')
+  const { t: common, i18n } = useTranslation('common')
   const isHydrated = useHydration()
   const [randomSeed, setRandomSeed] = useState<number | null>(null)
   // Add error state
@@ -108,7 +112,7 @@ export function ManifestoList() {
     return getAllCategories()
   }, [manifestoData])
 
-  const priorities = ["High", "Medium", "Low"]
+  const priorities = [common("labels.priority.high"), common("labels.priority.medium"), common("labels.priority.low")]
 
   const shuffleArray = <T,>(array: T[], seed: number): T[] => {
     const shuffled = [...array]
@@ -252,9 +256,9 @@ export function ManifestoList() {
           <X className="h-6 w-6 text-destructive" />
         </div>
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Error loading reforms</h3>
+          <h3 className="text-lg font-semibold">{trans('error.title')}</h3>
           <p className="text-muted-foreground max-w-md mx-auto">
-            {error.message || "Something went wrong while loading the reform proposals."}
+            {error.message || trans('error.message')}
           </p>
         </div>
         <Button 
@@ -263,7 +267,7 @@ export function ManifestoList() {
           className="mt-4"
         >
           <RotateCcw className="h-4 w-4 mr-2" />
-          Retry
+          {trans('error.retry')}
         </Button>
       </div>
     )
@@ -276,7 +280,7 @@ export function ManifestoList() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search reform proposals..."
+            placeholder={trans('manifestoList.searchPlaceholder')}
             value={filters.searchQuery}
             onChange={(e) => updateSearchQuery(e.target.value)}
             className="pl-10 pr-10"
@@ -297,7 +301,7 @@ export function ManifestoList() {
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">Quick Filters:</span>
+            <span className="text-sm font-medium text-muted-foreground">{trans('manifestoList.quickFilters')}</span>
           </div>
 
           {/* Category Filter */}
@@ -308,7 +312,7 @@ export function ManifestoList() {
                 size="sm"
                 className="relative"
               >
-                Categories
+                {trans('manifestoList.categories')}
                 {filters.selectedCategories.length > 0 && (
                   <Badge variant="secondary" className="ml-2 px-1 py-0 text-xs">
                     {filters.selectedCategories.length}
@@ -317,7 +321,7 @@ export function ManifestoList() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>Categories</DropdownMenuLabel>
+              <DropdownMenuLabel>{trans('manifestoList.categories')}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {categories.map((category) => (
                 <DropdownMenuItem key={category} className="flex items-center space-x-2">
@@ -339,7 +343,7 @@ export function ManifestoList() {
                 size="sm"
                 className="relative"
               >
-                Priority
+                {common('labels.priority.label')}
                 {filters.selectedPriorities.length > 0 && (
                   <Badge variant="secondary" className="ml-2 px-1 py-0 text-xs">
                     {filters.selectedPriorities.length}
@@ -348,7 +352,7 @@ export function ManifestoList() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48">
-              <DropdownMenuLabel>Priority Levels</DropdownMenuLabel>
+              <DropdownMenuLabel>{trans('manifestoList.priorityLevels')}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {priorities.map((priority) => (
                 <DropdownMenuItem key={priority} className="flex items-center space-x-2">
@@ -362,7 +366,7 @@ export function ManifestoList() {
                         priority === "High" ? "bg-red-500" : priority === "Medium" ? "bg-yellow-500" : "bg-green-500"
                       }`}
                     />
-                    {priority} Priority
+                    {priority} {common('labels.priority.label')}
                   </span>
                 </DropdownMenuItem>
               ))}
@@ -377,7 +381,7 @@ export function ManifestoList() {
             className="flex items-center gap-2 bg-transparent"
           >
             <SlidersHorizontal className="h-4 w-4" />
-            Advanced
+            {trans('manifestoList.advanced')}
           </Button>
 
           {/* Clear Filters */}
@@ -389,7 +393,7 @@ export function ManifestoList() {
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
             >
               <RotateCcw className="h-3 w-3" />
-              Clear All
+              {trans('manifestoList.clearAll')}
             </Button>
           )}
         </div>
@@ -400,9 +404,9 @@ export function ManifestoList() {
             {/* Timeline Range Slider */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium">Implementation Timeline</label>
-                <span className="text-sm text-muted-foreground">
-                  {filters.timelineRange[0]} - {filters.timelineRange[1]} years
+                <label className="text-sm font-medium">{trans('manifestoList.implementationTimeline')}</label>
+                <span className="text-sm text-muted-foreground">    
+                    {formatNumber(filters.timelineRange[0], i18n.language)} - {formatNumber(filters.timelineRange[1], i18n.language)} {trans('manifestoList.years')}
                 </span>
               </div>
               <Slider
@@ -415,9 +419,12 @@ export function ManifestoList() {
               />
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>
-                  {timelineValues[0]} year{timelineValues[0] !== 1 ? "s" : ""}
+                   {formatNumber(timelineValues[0], i18n.language || "en")} {trans("manifestoList.year")} {timelineValues[0] !== 1 ? "s" : ""}
+
                 </span>
-                <span>{timelineValues[1]} years</span>
+                <span>  {formatNumber(timelineValues[1], i18n.language)} {trans("manifestoList.years")}
+
+</span>
               </div>
             </div>
           </CollapsibleContent>
@@ -426,7 +433,7 @@ export function ManifestoList() {
         {/* Active Filters Display */}
         {hasActiveFilters && (
           <div className="flex items-center gap-2 flex-wrap pt-2 border-t">
-            <span className="text-sm text-muted-foreground">Active filters:</span>
+            <span className="text-sm text-muted-foreground">{trans('manifestoList.activeFilters')}</span>
 
             {filters.searchQuery && (
               <Badge variant="secondary" className="text-xs flex items-center gap-1">
@@ -444,15 +451,17 @@ export function ManifestoList() {
 
             {filters.selectedPriorities.map((priority) => (
               <Badge key={priority} variant="secondary" className="text-xs flex items-center gap-1">
-                {priority} Priority
+                {priority} {common('labels.priority.label')}
                 <X className="h-3 w-3 cursor-pointer hover:text-foreground" onClick={() => togglePriority(priority)} />
               </Badge>
             ))}
 
             {(filters.timelineRange[0] !== timelineValues[0] || filters.timelineRange[1] !== timelineValues[1]) && (
               <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                Timeline: {filters.timelineRange[0]}-{filters.timelineRange[1]} years
-                <X
+                    {trans('manifestoList.timeLine')} 
+                    {formatNumber(filters.timelineRange[0], i18n.language)}-
+                    {formatNumber(filters.timelineRange[1], i18n.language)} 
+                    {trans('manifestoList.years')}                <X
                   className="h-3 w-3 cursor-pointer hover:text-foreground"
                   onClick={() => updateTimelineRange([timelineValues[0], timelineValues[1]])}
                 />
@@ -465,23 +474,30 @@ export function ManifestoList() {
       {/* Results Summary */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Showing {Array.isArray(filteredItems) ? filteredItems.length : 0} of {Array.isArray(manifestoData) ? manifestoData.length : 0} reform proposals
-          {hasActiveFilters && " (filtered)"}
-          {Array.isArray(votesData) && votesData.length > 0 && ` • ${votesData.length} total votes`}
-        </p>
+          {trans('manifestoList.reformsDisplay', {
+              filtered: formatNumber(Array.isArray(filteredItems) ? filteredItems.length : 0, i18n.language),
+              total:formatNumber( Array.isArray(manifestoData) ? manifestoData.length : 0, i18n.language)
+            })}
+          {hasActiveFilters && trans('manifestoList.filtered')}
+              {Array.isArray(votesData) && votesData.length > 0 &&
+                ` • ${trans('manifestoList.totalVotes', {
+                      votesCount: formatNumber(votesData.length, i18n.language)
+                  })}`
+              }     
+                 </p>
         {Array.isArray(filteredItems) && filteredItems.length > 0 && (
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-red-500" />
-              High: {filteredItems.filter((item: ManifestoItem & { voteCount: number }) => item.priority === "High").length}
+              {common('labels.priority.high')}: {filteredItems.filter((item: ManifestoItem & { voteCount: number }) => item.priority === "High").length}
             </div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-yellow-500" />
-              Medium: {filteredItems.filter((item: ManifestoItem & { voteCount: number }) => item.priority === "Medium").length}
+              {common('labels.priority.medium')}: {filteredItems.filter((item: ManifestoItem & { voteCount: number }) => item.priority === "Medium").length}
             </div>
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full bg-green-500" />
-              Low: {filteredItems.filter((item: ManifestoItem & { voteCount: number }) => item.priority === "Low").length}
+              {common('labels.priority.low')}: {filteredItems.filter((item: ManifestoItem & { voteCount: number }) => item.priority === "Low").length}
             </div>
           </div>
         )}
@@ -501,17 +517,17 @@ export function ManifestoList() {
             <Search className="h-6 w-6 text-muted-foreground" />
           </div>
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold">No reform proposals found</h3>
+            <h3 className="text-lg font-semibold">{trans('manifestoList.noResults.title')}</h3>
             <p className="text-muted-foreground max-w-md mx-auto">
               {hasActiveFilters
-                ? "Try adjusting your filters or search terms to find what you're looking for."
-                : "No reform proposals are currently available."}
+                ? trans('manifestoList.noResults.filtered')
+                : trans('manifestoList.noResults.all')}
             </p>
           </div>
           {hasActiveFilters && (
             <Button variant="outline" onClick={clearAllFilters} className="mt-4 bg-transparent">
               <RotateCcw className="h-4 w-4 mr-2" />
-              Clear All Filters
+              {trans('manifestoList.noResults.clearFilters')}
             </Button>
           )}
         </div>

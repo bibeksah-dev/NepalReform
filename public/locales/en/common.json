@@ -1,5 +1,17 @@
 {
   "nav": {
+    "home": "Home",
+    "reforms": "27 Reforms",
+    "testimonials": "Testimonials",
+    "createAgenda": "Create Agenda",
+    "createOpinion": "Create Opinion",
+    "profile": "Profile",
+    "downloadManifesto": "Download Manifesto",
+    "downloadFullManifesto": "Download Full Manifesto:",
+    "english": "English",
+    "nepali": "Nepali",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
     "backToReforms": "Back to All Reforms",
     "previousReform": "Previous Reform",
     "nextReform": "Next Reform",
@@ -43,7 +55,8 @@
     "communitySuggestions": "Community Suggestions",
     "publicSupport": "Public Support",
     "shareAndEngage": "Share & Engage",
-    "implementationOverview": "Implementation Overview"
+    "implementationOverview": "Implementation Overview",
+    "shareLink": "Share Link"
   },
   "actions": {
     "showMore": "Show More",
@@ -52,7 +65,8 @@
     "vote": "Vote",
     "share": "Share",
     "moreSolutions": "+ more solutions...",
-    "moreTargets": "+ more"
+    "moreTargets": "+ more",
+    "shareThisReform": "Share This Reform"
   },
   "descriptions": {
     "communityFeedback": "Share your ideas and feedback on this reform proposal. Engage with the community by voting on suggestions from other citizens.",

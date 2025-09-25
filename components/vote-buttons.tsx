@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ThumbsUp, ThumbsDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState, useEffect } from "react"
+import i18n, { formatNumber } from "@/lib/i18n"
 
 interface VoteButtonsProps {
   itemId: string
@@ -107,7 +108,7 @@ export function VoteButtons({
           "font-medium",
           size === "sm" ? "text-xs" : "text-sm"
         )}>
-          {optimisticLikes}
+          {formatNumber(optimisticLikes, i18n.language)}
         </span>
       </Button>
 
@@ -142,7 +143,7 @@ export function VoteButtons({
           "font-medium",
           size === "sm" ? "text-xs" : "text-sm"
         )}>
-          {optimisticDislikes}
+         {formatNumber(optimisticDislikes, i18n.language)}
         </span>
       </Button>
 

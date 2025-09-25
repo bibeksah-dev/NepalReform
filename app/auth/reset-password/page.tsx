@@ -14,8 +14,10 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useState, useEffect } from "react"
 import { Eye, EyeOff, AlertCircle, CheckCircle, Shield } from "lucide-react"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 export default function ResetPasswordPage() {
+  const { t } = useTranslation('translation')
   const [password, setPassword] = useState("")
   const [repeatPassword, setRepeatPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -35,11 +37,8 @@ export default function ResetPasswordPage() {
   const { updatePassword, user } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
-  
-  // Check if user is authenticated (they should be after clicking reset link)
   useEffect(() => {
     if (!user) {
-      // If not authenticated, they probably need to click the reset link again
       router.push('/auth/forgot-password')
     }
   }, [user, router])
@@ -50,20 +49,18 @@ export default function ResetPasswordPage() {
 
   const validateForm = () => {
     const newErrors: typeof errors = {}
-
-    // Password validation
     const passwordValidation = validatePassword(password)
+
     if (!password) {
-      newErrors.password = "Password is required"
+      newErrors.password = t('resetPassword.passwordRequired')
     } else if (!passwordValidation.isValid) {
-      newErrors.password = "Password does not meet requirements"
+      newErrors.password = t('resetPassword.passwordInvalid')
     }
 
-    // Repeat password validation
     if (!repeatPassword) {
-      newErrors.repeatPassword = "Please confirm your password"
+      newErrors.repeatPassword = t('resetPassword.repeatPasswordRequired')
     } else if (password !== repeatPassword) {
-      newErrors.repeatPassword = "Passwords do not match"
+      newErrors.repeatPassword = t('resetPassword.passwordsMismatch')
     }
 
     setErrors(newErrors)
@@ -78,17 +75,16 @@ export default function ResetPasswordPage() {
         if (touched.password) {
           const passwordValidation = validatePassword(value)
           if (!value) {
-            newErrors.password = "Password is required"
+            newErrors.password = t('resetPassword.passwordRequired')
           } else if (!passwordValidation.isValid) {
-            newErrors.password = "Password does not meet requirements"
+            newErrors.password = t('resetPassword.passwordInvalid')
           } else {
             delete newErrors.password
           }
         }
-        // Also revalidate repeat password if it was touched
         if (touched.repeatPassword) {
           if (repeatPassword && value !== repeatPassword) {
-            newErrors.repeatPassword = "Passwords do not match"
+            newErrors.repeatPassword = t('resetPassword.passwordsMismatch')
           } else if (repeatPassword && value === repeatPassword) {
             delete newErrors.repeatPassword
           }
@@ -97,9 +93,9 @@ export default function ResetPasswordPage() {
       case 'repeatPassword':
         if (touched.repeatPassword) {
           if (!value) {
-            newErrors.repeatPassword = "Please confirm your password"
+            newErrors.repeatPassword = t('resetPassword.repeatPasswordRequired')
           } else if (password !== value) {
-            newErrors.repeatPassword = "Passwords do not match"
+            newErrors.repeatPassword = t('resetPassword.passwordsMismatch')
           } else {
             delete newErrors.repeatPassword
           }
@@ -112,10 +108,7 @@ export default function ResetPasswordPage() {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    if (!validateForm()) {
-      return
-    }
+    if (!validateForm()) return
 
     setIsLoading(true)
     setErrors({})
@@ -127,7 +120,7 @@ export default function ResetPasswordPage() {
         if (error.message.includes('Password should be')) {
           setErrors({ password: error.message })
         } else if (error.message.includes('Unable to process request')) {
-          setErrors({ general: 'The reset link may have expired. Please request a new one.' })
+          setErrors({ general: t('resetPassword.resetLinkExpired') })
         } else {
           setErrors({ general: error.message })
         }
@@ -135,24 +128,21 @@ export default function ResetPasswordPage() {
       }
 
       setIsSuccess(true)
-      toast.success('Password updated successfully!', {
-        description: 'You can now sign in with your new password.',
+      toast.success(t('resetPassword.toastSuccessTitle'), {
+        description: t('resetPassword.toastSuccessDescription'),
       })
 
-      // Redirect to login after success
       setTimeout(() => {
         router.push('/auth/login')
       }, 2000)
-
     } catch (err) {
       console.error('Password reset error:', err)
-      setErrors({ general: 'An unexpected error occurred. Please try again.' })
+      setErrors({ general: t('resetPassword.unexpectedError') })
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Show success state
   if (isSuccess) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100 p-6">
@@ -162,20 +152,15 @@ export default function ResetPasswordPage() {
               <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
-              <CardTitle className="text-2xl font-bold text-foreground">Password Updated!</CardTitle>
+              <CardTitle className="text-2xl font-bold text-foreground">{t('resetPassword.successTitle')}</CardTitle>
               <CardDescription className="text-muted-foreground">
-                Your password has been successfully updated
+                {t('resetPassword.successDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center space-y-6">
-              <p className="text-sm text-muted-foreground">
-                You will be automatically redirected to the login page, or you can click the button below.
-              </p>
-
+              <p className="text-sm text-muted-foreground">{t('resetPassword.successRedirectInfo')}</p>
               <Button asChild className="w-full h-12">
-                <Link href="/auth/login">
-                  Continue to Login
-                </Link>
+                <Link href="/auth/login">{t('resetPassword.continueToLogin')}</Link>
               </Button>
             </CardContent>
           </Card>
@@ -184,7 +169,6 @@ export default function ResetPasswordPage() {
     )
   }
 
-  // If not authenticated, show message to use reset link
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100 p-6">
@@ -194,27 +178,17 @@ export default function ResetPasswordPage() {
               <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
                 <Shield className="w-8 h-8 text-orange-600" />
               </div>
-              <CardTitle className="text-2xl font-bold text-foreground">Access Required</CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Please click the reset link in your email to access this page
-              </CardDescription>
+              <CardTitle className="text-2xl font-bold text-foreground">{t('resetPassword.accessRequiredTitle')}</CardTitle>
+              <CardDescription className="text-muted-foreground">{t('resetPassword.accessRequiredDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="text-center space-y-6">
-              <p className="text-sm text-muted-foreground">
-                To reset your password, you need to click the secure link we sent to your email address.
-              </p>
-
+              <p className="text-sm text-muted-foreground">{t('resetPassword.accessRequiredInfo')}</p>
               <div className="space-y-3">
                 <Button asChild className="w-full h-12">
-                  <Link href="/auth/forgot-password">
-                    Request New Reset Link
-                  </Link>
+                  <Link href="/auth/forgot-password">{t('resetPassword.requestNewLink')}</Link>
                 </Button>
-                
                 <Button asChild variant="outline" className="w-full h-12">
-                  <Link href="/auth/login">
-                    Back to Login
-                  </Link>
+                  <Link href="/auth/login">{t('resetPassword.backToLogin')}</Link>
                 </Button>
               </div>
             </CardContent>
@@ -232,17 +206,15 @@ export default function ResetPasswordPage() {
             <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center">
               <Shield className="w-8 h-8 text-white" />
             </div>
-            <CardTitle className="text-2xl font-bold text-foreground">Set New Password</CardTitle>
+            <CardTitle className="text-2xl font-bold text-foreground">{t('resetPassword.newPasswordLabel')}</CardTitle>
             <CardDescription className="text-muted-foreground">
-              Choose a strong password for your account
+              {t('resetPassword.passwordInvalid')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleResetPassword} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">
-                  New Password
-                </Label>
+                <Label htmlFor="password" className="text-sm font-medium">{t('resetPassword.newPasswordLabel')}</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -261,23 +233,15 @@ export default function ResetPasswordPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 flex items-center pr-3"
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-muted-foreground" />
-                    )}
+                    {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
                   </button>
                 </div>
-                {errors.password && (
-                  <p className="text-sm text-red-600">{errors.password}</p>
-                )}
+                {errors.password && <p className="text-sm text-red-600">{errors.password}</p>}
                 {password && <PasswordStrengthIndicator password={password} />}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="repeat-password" className="text-sm font-medium">
-                  Confirm New Password
-                </Label>
+                <Label htmlFor="repeat-password" className="text-sm font-medium">{t('resetPassword.confirmPasswordLabel')}</Label>
                 <div className="relative">
                   <Input
                     id="repeat-password"
@@ -296,20 +260,14 @@ export default function ResetPasswordPage() {
                     onClick={() => setShowRepeatPassword(!showRepeatPassword)}
                     className="absolute inset-y-0 right-0 flex items-center pr-3"
                   >
-                    {showRepeatPassword ? (
-                      <EyeOff className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-muted-foreground" />
-                    )}
+                    {showRepeatPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
                   </button>
                 </div>
-                {errors.repeatPassword && (
-                  <p className="text-sm text-red-600">{errors.repeatPassword}</p>
-                )}
+                {errors.repeatPassword && <p className="text-sm text-red-600">{errors.repeatPassword}</p>}
                 {touched.repeatPassword && password === repeatPassword && repeatPassword && (
                   <div className="flex items-center gap-2 text-sm text-green-600">
                     <CheckCircle className="h-3 w-3" />
-                    <span>Passwords match</span>
+                    <span>{t('resetPassword.passwordsMatch')}</span>
                   </div>
                 )}
               </div>
@@ -322,14 +280,12 @@ export default function ResetPasswordPage() {
               )}
 
               <Button type="submit" className="w-full h-12 text-base font-medium" disabled={isLoading}>
-                {isLoading ? "Updating Password..." : "Update Password"}
+                {isLoading ? t('resetPassword.updatingButton') : t('resetPassword.updateButton')}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
-              <Link href="/auth/login" className="text-sm text-muted-foreground hover:text-primary">
-                Back to Login
-              </Link>
+              <Link href="/auth/login" className="text-sm text-muted-foreground hover:text-primary">{t('resetPassword.backToLogin')}</Link>
             </div>
           </CardContent>
         </Card>

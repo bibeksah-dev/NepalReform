@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Send, Loader2 } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 interface SuggestionFormProps {
   agendaId: string
@@ -23,6 +24,7 @@ export function SuggestionForm({ agendaId, onSuggestionAdded }: SuggestionFormPr
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const { t } = useTranslation('translation')
 
   const supabase = createClient()
 
@@ -114,7 +116,7 @@ export function SuggestionForm({ agendaId, onSuggestionAdded }: SuggestionFormPr
         <CardContent className="pt-6">
           <div className="text-center space-y-4">
             <Loader2 className="h-6 w-6 animate-spin mx-auto" />
-            <p className="text-muted-foreground">Loading...</p>
+            <p className="text-muted-foreground">{t('suggestionForm.loading')}</p>
           </div>
         </CardContent>
       </Card>
@@ -126,7 +128,7 @@ export function SuggestionForm({ agendaId, onSuggestionAdded }: SuggestionFormPr
       <Card className="border-dashed border-2 border-muted-foreground/25">
         <CardContent className="pt-6">
           <div className="text-center space-y-4">
-            <p className="text-muted-foreground">Sign in to share your suggestions</p>
+            <p className="text-muted-foreground">{t('suggestionForm.signInPrompt')}</p>
             <Button asChild>
               <a href="/auth/login">Sign In</a>
             </Button>
@@ -141,7 +143,7 @@ export function SuggestionForm({ agendaId, onSuggestionAdded }: SuggestionFormPr
       <CardHeader>
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
           <Send className="h-5 w-5 text-primary" />
-          Share Your Suggestion
+           {t('suggestionForm.shareYourSuggestion')}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -152,7 +154,7 @@ export function SuggestionForm({ agendaId, onSuggestionAdded }: SuggestionFormPr
               onClick={() => setError(null)}
               className="text-xs underline hover:no-underline mt-1"
             >
-              Dismiss
+              {t('suggestionForm.dismiss')}
             </button>
           </div>
         )}
@@ -164,7 +166,7 @@ export function SuggestionForm({ agendaId, onSuggestionAdded }: SuggestionFormPr
               onClick={() => setSuccessMessage(null)}
               className="text-xs underline hover:no-underline mt-1 text-green-700"
             >
-              Dismiss
+              {t('suggestionForm.dismiss')}
             </button>
           </div>
         )}
@@ -172,11 +174,11 @@ export function SuggestionForm({ agendaId, onSuggestionAdded }: SuggestionFormPr
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="author-name" className="text-sm font-medium">
-              Your Name
+              {t('suggestionForm.yourName')}
             </Label>
             <Input
               id="author-name"
-              placeholder="How should we identify you?"
+              placeholder={t('suggestionForm.yourNamePlaceholder')}
               value={authorName}
               onChange={(e) => setAuthorName(e.target.value)}
               required
@@ -187,11 +189,11 @@ export function SuggestionForm({ agendaId, onSuggestionAdded }: SuggestionFormPr
 
           <div className="space-y-2">
             <Label htmlFor="suggestion-content" className="text-sm font-medium">
-              Your Suggestion
+              {t('suggestionForm.yourSuggestion')}
             </Label>
             <Textarea
               id="suggestion-content"
-              placeholder="Share your thoughts, ideas, or improvements for this reform agenda..."
+              placeholder={t('suggestionForm.yourSuggestionPlaceholder')}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               required
@@ -209,12 +211,12 @@ export function SuggestionForm({ agendaId, onSuggestionAdded }: SuggestionFormPr
             {isSubmitting ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Submitting...
+                {t('suggestionForm.submitting')}
               </>
             ) : (
               <>
                 <Send className="h-4 w-4 mr-2" />
-                Submit Suggestion
+                {t('suggestionForm.submitButton')}
               </>
             )}
           </Button>

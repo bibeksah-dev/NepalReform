@@ -58,8 +58,52 @@
     "successMessage": "You've successfully signed up. Please check your email to confirm your account before signing in.",
     "backToLogin": "Back to Login"
   },
-  "heroSection": {
-    
+  "forgotPassword": {
+    "resetPasswordTitle": "Reset Password",
+    "resetPasswordDescription": "Enter your email address and we'll send you instructions to reset your password",
+    "emailLabel": "Email Address",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "sendInstructions": "Send Reset Instructions",
+    "sending": "Sending...",
+    "backToLogin": "Back to Login",
+    "tryDifferentEmail": "Try Different Email",
+    "checkEmailTitle": "Check Your Email",
+    "checkEmailDescription": "We've sent password reset instructions to your email address",
+    "checkEmailInfo": "If an account with ",
+    "checkEmailInfo2nd": "exists, you will receive password reset instructions shortly.",
+    "checkEmailSpam": "Don't forget to check your spam folder!",
+    "errorUserNotFound": "No account found with this email address",
+    "errorRateLimit": "Too many reset requests. Please wait before requesting again.",
+    "errorUnexpected": "An unexpected error occurred. Please try again.",
+    "toastSuccessTitle": "Password reset email sent!",
+    "toastSuccessDescription": "Check your inbox for further instructions."
+  },
+  "resetPassword": {
+    "newPasswordLabel": "New Password",
+    "confirmPasswordLabel": "Confirm New Password",
+    "passwordRequired": "Password is required",
+    "passwordInvalid": "Password does not meet requirements",
+    "repeatPasswordRequired": "Please confirm your password",
+    "passwordsMismatch": "Passwords do not match",
+    "updateButton": "Update Password",
+    "updatingButton": "Updating Password...",
+    "successTitle": "Password Updated!",
+    "successDescription": "Your password has been successfully updated",
+    "successRedirectInfo": "You will be automatically redirected to the login page, or you can click the button below.",
+    "continueToLogin": "Continue to Login",
+    "accessRequiredTitle": "Access Required",
+    "accessRequiredDescription": "Please click the reset link in your email to access this page",
+    "accessRequiredInfo": "To reset your password, you need to click the secure link we sent to your email address.",
+    "requestNewLink": "Request New Reset Link",
+    "backToLogin": "Back to Login",
+    "passwordsMatch": "Passwords match",
+    "toastSuccessTitle": "Password updated successfully!",
+    "toastSuccessDescription": "You can now sign in with your new password.",
+    "unexpectedError": "An unexpected error occurred. Please try again.",
+    "resetLinkExpired": "The reset link may have expired. Please request a new one."
+  },
+  "heroSection": { 
     "subtitle": "Your Voice in Nepal's Democratic Future",
     "description": {
       "p1": "Nepal's democracy is at a crossroads. This platform is where citizens shape the future, through ideas, debate, and action. From tackling corruption to rethinking elections, your voice can turn protest into progress.",
@@ -271,5 +315,61 @@
       "confirm": "Clear Cache"
     },
     "offlineMode": "Offline Mode - Changes will sync when online"
+  },
+  "suggestionForm": {
+      "yourName": "Your Name",
+      "yourNamePlaceholder": "How should we identify you?",
+      "shareYourSuggestion": "Share Your Suggestion",
+      "yourSuggestion": "Your Suggestion",
+      "yourSuggestionPlaceholder": "Share your thoughts, ideas, or improvements for this reform agenda...",
+      "submitButton": "Submit Suggestion",
+      "submitting": "Submitting...",
+      "errorFillAll": "Please fill in all fields",
+      "errorSubmitFailed": "Failed to submit suggestion",
+      "successMessage": "Thank you for your suggestion!",
+      "signInPrompt": "Sign in to share your suggestions",
+      "dismiss": "Dismiss",
+      "loading": "Loading..."
+    },
+    "manifestoList": {
+      "searchPlaceholder": "Search reform proposals...",
+      "quickFilters": "Quick Filters:",
+      "categories": "Categories",
+      "priorityLevels": "Priority Levels",
+      "advanced": "Advanced",
+      "clearAll": "Clear All",
+      "implementationTimeline": "Implementation Timeline",
+      "year": "year",
+      "years": "years",
+      "activeFilters": "Active filters:",
+      "timeLine": "Timeline",
+      "reformsDisplay": "Showing {{filtered}} of {{total}} reform proposals",
+      "filtered": " (filtered)",
+      "totalVotes": "{{votesCount}} total votes",
+      "noResults": {
+        "title": "No reform proposals found",
+        "filtered": "Try adjusting your filters or search terms to find what you're looking for.",
+        "all": "No reform proposals are currently available.",
+        "clearFilters": "Clear All Filters"
+      },
+      "error": {
+        "title": "Error loading reforms",
+        "message": "Something went wrong while loading the reform proposals.",
+        "retry": "Retry"
+      }
+  },
+   "agendaVote": {
+    "updating": "Updating...",
+    "like": " like",
+    "dislike": " dislike",
+    "totalVotes": "{{count}} vote",
+    "totalVotes_plural": "{{count}} votes",
+    "popular": "Popular",
+    "controversial": "⚡ Controversial",
+    "highEngagement": "🔥 High Engagement",
+    "noVotes": "Be the first to vote on this agenda!",
+     "voteErrorSignIn": "Please sign in to vote on this agenda item",
+    "voteErrorLoad": "Please wait for the page to load completely",
+    "voteErrorSubmit": "Failed to submit vote"
   }
 }

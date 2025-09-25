@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, use } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { useHydration } from "@/hooks/use-hydration"
+import { useTranslation } from "react-i18next"
 
 interface VoteData {
   likes: number
@@ -31,6 +32,7 @@ export type AgendaVoteRow = {
 };
 
 export function useAgendaVotes(agendaId: string) {
+  const { t }= useTranslation("translation")
   const isHydrated = useHydration()
   
   // Initialize with neutral state to prevent hydration mismatch
@@ -176,7 +178,7 @@ export function useAgendaVotes(agendaId: string) {
   // Handle voting with optimistic updates
   const handleVote = async (voteType: "like" | "dislike") => {
     if (!isHydrated) {
-      setError("Please wait for the page to load completely")
+      setError(t('agendaVote.voteErrorLoad'))
       return
     }
 
@@ -222,7 +224,7 @@ export function useAgendaVotes(agendaId: string) {
       } = await supabase.auth.getUser()
 
       if (!user) {
-        setError("Please sign in to vote on this agenda item")
+        setError(t('agendaVote.voteErrorSignIn'))
         // Revert optimistic update
         await fetchVotes()
         setIsLoading(false)
@@ -258,7 +260,7 @@ export function useAgendaVotes(agendaId: string) {
       persistVoteData(newVoteData)
     } catch (err) {
       console.error("Error voting:", err)
-      setError(err instanceof Error ? err.message : "Failed to submit vote")
+      setError(err instanceof Error ? err.message : t('agendaVote.voteErrorSubmit'))
       // Revert to actual data on error
       await fetchVotes()
     } finally {
