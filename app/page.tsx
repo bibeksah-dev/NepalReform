@@ -4,15 +4,62 @@ import { HeroSection } from "@/components/hero-section"
 import { ManifestoList } from "@/components/manifesto-list"
 import { TestimonialCarousel } from "@/components/testimonial-carousel"
 import Link from "next/link"
-import { Suspense } from "react"
+import { Suspense, useContext } from "react"
 import { useTranslation } from "react-i18next"
+import { Skeleton } from "@/components/ui/skeleton";
+import { TranslationLoadingContext } from "@/components/i18n-provider";
 
 export default function HomePage() {
+  const { loaded } = useContext(TranslationLoadingContext);
   const { t:tHero } = useTranslation('translation')
   const { t:tCommon } = useTranslation('common')
   // Move steps and stepsArray inside the render so they update with language
   const steps = tHero('homepage.howToEngage.steps', { returnObjects: true });
   const stepsArray = Array.isArray(steps) ? steps : [];
+
+  if (!loaded) {
+    // Page-level skeleton
+    return (
+      <div className="min-h-screen bg-background">
+        <Skeleton className="w-full h-16 mb-4" />
+        <main>
+          <Skeleton className="w-full h-[500px] mb-8" />
+          <section className="py-16 sm:py-24">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-4">
+                <Skeleton className="h-10 w-1/2 mx-auto mb-4" />
+                <Skeleton className="h-6 w-2/3 mx-auto" />
+              </div>
+              <div className="max-w-3xl mx-auto mt-12 bg-white/70 backdrop-blur-sm rounded-2xl shadow-md p-8 space-y-6 mb-16">
+                <Skeleton className="h-8 w-1/3 mb-4" />
+                <div className="space-y-3">
+                  {[1,2,3].map(i => (
+                    <Skeleton key={i} className="h-6 w-5/6" />
+                  ))}
+                </div>
+              </div>
+              <Skeleton className="w-full h-64 rounded-xl" />
+            </div>
+          </section>
+          <Skeleton className="w-full h-64 mb-8" />
+          <footer className="bg-muted/50 border-t py-12">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center space-y-4">
+                <div className="flex justify-center items-center gap-3">
+                  <Skeleton className="w-8 h-8 rounded-full" />
+                  <Skeleton className="h-6 w-32" />
+                </div>
+                <Skeleton className="h-4 w-1/2 mx-auto" />
+                <div className="pt-8 border-t border-border/50">
+                  <Skeleton className="h-4 w-1/3 mx-auto" />
+                </div>
+              </div>
+            </div>
+          </footer>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

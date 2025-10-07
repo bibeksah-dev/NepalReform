@@ -5,13 +5,15 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowDown, Users, MessageSquare, Vote } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import Image from "next/image"
 import { useTranslation } from "react-i18next"
-
+import { TranslationLoadingContext } from "@/components/i18n-provider"
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function HeroSection() {
   const { t , ready} = useTranslation("translation")
+  const { loaded } = useContext(TranslationLoadingContext);
   if (!ready) return null
 const words = t("heroSection.animatedWords", { returnObjects: true }) as string[];
 
@@ -36,6 +38,56 @@ const words = t("heroSection.animatedWords", { returnObjects: true }) as string[
     }, 2000)
     return () => clearInterval(interval)
   }, [isLoaded, words.length])
+
+  if (!loaded) {
+    // Custom skeleton mimicking the HeroSection UI using <Skeleton>
+    return (
+      <section className="relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-16 sm:py-24">
+        <div className="absolute inset-0 pointer-events-none">
+          <Skeleton className="object-cover object-center opacity-20 w-full h-full" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10" />
+        </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center space-y-8">
+            <div className="space-y-4">
+              <div className="flex items-center justify-center gap-4">
+                <Skeleton className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full" />
+                <Skeleton className="h-10 w-48" />
+              </div>
+              <Skeleton className="h-6 w-2/3 mx-auto" />
+            </div>
+            <div className="max-w-3xl mx-auto space-y-4 bg-white/30 backdrop-blur-sm rounded-xl p-6 shadow-sm">
+              <Skeleton className="h-5 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-4/6" />
+            </div>
+            <div className="text-center space-y-4">
+              <div className="flex justify-center items-center gap-2">
+                <Skeleton className="h-8 w-32" />
+                <Skeleton className="h-8 w-24" />
+              </div>
+              <Skeleton className="h-6 w-40 mx-auto" />
+            </div>
+            <div className="flex flex-wrap justify-center gap-8 py-8">
+              {[1,2,3].map(i => (
+                <div key={i} className="flex items-center gap-2 text-center bg-white/40 backdrop-blur-sm rounded-lg px-4 py-2">
+                  <Skeleton className="w-10 h-10 rounded-full" />
+                  <div>
+                    <Skeleton className="h-6 w-12 mb-1" />
+                    <Skeleton className="h-4 w-20" />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Skeleton className="h-12 w-48" />
+              <Skeleton className="h-12 w-48" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-16 sm:py-24">

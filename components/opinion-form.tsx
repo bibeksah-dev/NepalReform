@@ -1,5 +1,8 @@
 "use client"
 import type React from "react"
+import { useContext, useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { TranslationLoadingContext } from "@/components/i18n-provider";
 
 import { useState } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -17,6 +20,7 @@ import { useTranslation } from 'react-i18next'
 
 export function OpinionForm() {
     const { t } = useTranslation('translation')
+    const { loaded } = useContext(TranslationLoadingContext);
 
     const CATEGORIES =t("opinionCreation.categories", { returnObjects: true }) as string[]
 
@@ -27,9 +31,15 @@ export function OpinionForm() {
     description: "",
     problem_statement: "",
     category: "",
-    priority_level:  PRIORITY_LEVELS[1],
+    priority_level: "",
     implementation_timeline: "",
   })
+
+  useEffect(() => {
+    if (loaded && PRIORITY_LEVELS.length > 0 && !formData.priority_level) {
+      setFormData((prev) => ({ ...prev, priority_level: PRIORITY_LEVELS[1] }))
+    }
+  }, [loaded, PRIORITY_LEVELS])
 
   const [keyPoints, setKeyPoints] = useState<string[]>([""])
   const [proposedSolutions, setProposedSolutions] = useState<string[]>([""])
@@ -177,6 +187,31 @@ export function OpinionForm() {
       </Button>
     </div>
   )
+
+  if (!loaded) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Skeleton className="h-10 w-1/2 mb-4" />
+        <Skeleton className="h-6 w-2/3 mb-8" />
+        <div className="max-w-2xl mx-auto">
+          <Skeleton className="h-12 w-full mb-4" />
+          <Skeleton className="h-12 w-full mb-4" />
+          <Skeleton className="h-32 w-full mb-4" />
+          <Skeleton className="h-32 w-full mb-4" />
+          <Skeleton className="h-12 w-1/2 mb-4" />
+          <Skeleton className="h-12 w-1/2 mb-4" />
+          <Skeleton className="h-12 w-1/2 mb-4" />
+          <Skeleton className="h-12 w-1/2 mb-4" />
+          <Skeleton className="h-12 w-1/2 mb-4" />
+          <Skeleton className="h-12 w-1/2 mb-4" />
+          <div className="flex gap-4 pt-6">
+            <Skeleton className="h-10 w-1/2" />
+            <Skeleton className="h-10 w-1/2" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
         <div className="min-h-screen bg-background">

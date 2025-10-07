@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -13,6 +13,8 @@ import { ClientOnly } from "@/components/client-only"
 import { useHydration } from "@/hooks/use-hydration"
 import { LanguageToggle } from "@/components/language-toggle"
 import { useTranslation } from "react-i18next"
+import { TranslationLoadingContext } from "@/components/i18n-provider"
+import { Skeleton } from "./ui/skeleton"
 
 // Locally define Supabase's AuthChangeEvent type union (from internal source)
 type AuthChangeEvent =
@@ -41,6 +43,7 @@ export function Header() {
   const isHydrated = useHydration()
   const supabase = createClient()
   const { t } = useTranslation('common')
+  const { loaded } = useContext(TranslationLoadingContext);
 
   useEffect(() => {
     if (!isHydrated) return
@@ -141,6 +144,11 @@ export function Header() {
         </Link>
       </Button>
     )
+  }
+
+  if (!loaded) {
+    // Custom skeleton for Header
+    return <Skeleton className="w-full h-10 rounded bg-muted animate-pulse" />
   }
 
   return (
