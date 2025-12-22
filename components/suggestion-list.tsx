@@ -146,7 +146,9 @@ export const SuggestionList = memo(({ agendaId, refreshTrigger }: SuggestionList
       setError(null)
       console.log("[v0] Fetching suggestions for agenda:", agendaId)
 
-      const response = await fetch(`/api/suggestions?agenda_id=${encodeURIComponent(agendaId)}`)
+      // Add cache-busting parameter to ensure fresh data
+      const cacheBuster = Date.now()
+      const response = await fetch(`/api/suggestions?agenda_id=${encodeURIComponent(agendaId)}&_t=${cacheBuster}`)
       if (!response.ok) throw new Error("Failed to fetch suggestions")
 
       const data = await response.json()

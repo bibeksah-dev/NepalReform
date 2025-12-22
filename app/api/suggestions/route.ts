@@ -46,7 +46,8 @@ export async function GET(request: NextRequest) {
       suggestions: suggestions || [],
       agenda_id: queryId,
     })
-    response.headers.set("Cache-Control", "public, max-age=120, s-maxage=120")
+    // No caching for suggestions to ensure fresh data after submission
+    response.headers.set("Cache-Control", "no-cache, no-store, must-revalidate")
     return response
   } catch (error) {
     console.error("Error fetching suggestions:", error)
