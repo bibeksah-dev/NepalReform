@@ -96,6 +96,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <head>
+        {/* Preload translation files for faster i18n initialization */}
+        <link rel="preload" href="/locales/en/common.json" as="fetch" crossOrigin="anonymous" />
+        <link rel="preload" href="/locales/np/common.json" as="fetch" crossOrigin="anonymous" />
         <link rel="icon" href="/nrlogo7.png" type="image/png" />
         <link rel="apple-touch-icon" href="/nrlogo7.png" />
         <link rel="shortcut icon" href="/nrlogo7.png" />

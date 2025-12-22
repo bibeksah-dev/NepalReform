@@ -8,15 +8,21 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig = {
   // Enable React Strict Mode for better hydration debugging
   reactStrictMode: true,
-  // Enable production source maps for easier error tracing in prod
-  productionBrowserSourceMaps: true,
+  // Disable production source maps to prevent exposing source code (use error tracking service instead)
+  productionBrowserSourceMaps: false,
   // Use default server output to avoid Windows symlink issues during standalone tracing
 
-  eslint: {
-    ignoreDuringBuilds: process.env.NODE_ENV === 'development',
-  },
+  // Next.js 16: ESLint config moved to CLI, TypeScript errors handled separately
   typescript: {
     ignoreBuildErrors: process.env.NODE_ENV === 'development',
+  },
+
+  // Next.js 16: Turbopack config with root set for Windows compatibility
+  turbopack: {
+    root: process.cwd(),
+    resolveAlias: {
+      'recharts/es6': 'recharts/lib',
+    },
   },
   images: {
     unoptimized: false,
@@ -53,35 +59,35 @@ const nextConfig = {
       'recharts',
       'lucide-react',
       '@radix-ui/react-icons',
+      '@radix-ui/react-accordion',
+      '@radix-ui/react-alert-dialog',
+      '@radix-ui/react-avatar',
+      '@radix-ui/react-checkbox',
+      '@radix-ui/react-collapsible',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-label',
+      '@radix-ui/react-popover',
+      '@radix-ui/react-progress',
+      '@radix-ui/react-radio-group',
+      '@radix-ui/react-scroll-area',
+      '@radix-ui/react-select',
+      '@radix-ui/react-separator',
+      '@radix-ui/react-slider',
+      '@radix-ui/react-slot',
+      '@radix-ui/react-switch',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-toast',
+      '@radix-ui/react-toggle',
+      '@radix-ui/react-toggle-group',
+      '@radix-ui/react-tooltip',
+      'date-fns',
+      'framer-motion',
+      '@tanstack/react-query',
     ],
   },
   
-  webpack: (config, { isServer, dev }) => {
-    // Optimize recharts imports for better tree shaking
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      'recharts/es6': 'recharts/lib',
-    }
-    
-    // Enable better tree shaking for lucide-react
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-      }
-    }
-    
-    // Production-only optimizations
-    if (!dev) {
-      config.optimization = {
-        ...config.optimization,
-        sideEffects: false,
-        usedExports: true,
-      }
-    }
-    
-    return config
-  },
+  // Webpack config removed - using Turbopack in Next.js 16
   env: {
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'https://nepalreforms.com',
   },

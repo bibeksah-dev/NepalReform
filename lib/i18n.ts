@@ -122,6 +122,11 @@ export async function loadCommonTranslations(language: string) {
   return i18n.getResourceBundle(language, 'common') || {};
 }
 
+// Check if translations are already loaded
+export function isTranslationsLoaded(): boolean {
+  return translationsLoaded;
+}
+
 // Export the loadTranslations function for use in the provider
 export { loadTranslations };
 

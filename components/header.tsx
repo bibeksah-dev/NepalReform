@@ -97,6 +97,7 @@ export function Header() {
                     alt="NepalReforms Logo"
                     fill
                     className="object-contain rounded-none"
+                    priority
                   />
                 </div>
                 <h1 className="text-xl font-bold text-foreground hidden sm:block">NepalReforms</h1>

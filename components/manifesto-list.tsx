@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, useCallback } from "react"
 import { ManifestoCard } from "./manifesto-card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -201,8 +201,8 @@ export function ManifestoList() {
     }
   }, [sortedData, randomSeed])
 
-  // Handler functions
-  const clearFilters = () => {
+  // Handler functions - memoized to prevent unnecessary re-renders
+  const clearFilters = useCallback(() => {
     setFilters({
       searchQuery: "",
       selectedCategories: [],
@@ -210,30 +210,75 @@ export function ManifestoList() {
       timelineRange: [6, 60],
       showAdvancedFilters: false
     })
-  }
+  }, [])
 
-  const shuffleData = () => {
+  const shuffleData = useCallback(() => {
     setRandomSeed(Math.random())
-    
+
     // Clear cache to force re-render
     try {
       CacheManager.clearAll()
     } catch (err) {
       console.warn("Failed to clear cache:", err)
     }
-  }
+  }, [])
 
-  const getTimelineLabel = (months: number): string => {
+  const getTimelineLabel = useCallback((months: number): string => {
     if (months < 12) return t('manifestoList.timelineMonths', { months })
     const years = Math.floor(months / 12)
     const remainingMonths = months % 12
     if (remainingMonths === 0) {
-      return years === 1 
+      return years === 1
         ? t('manifestoList.timelineYears', { years })
         : t('manifestoList.timelineYearsPlural', { years })
     }
     return t('manifestoList.timelineYearsMonths', { years, months: remainingMonths })
-  }
+  }, [t])
+
+  // Memoized filter update handlers
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilters(prev => ({ ...prev, searchQuery: e.target.value }))
+  }, [])
+
+  const handleClearSearch = useCallback(() => {
+    setFilters(prev => ({ ...prev, searchQuery: "" }))
+  }, [])
+
+  const toggleAdvancedFilters = useCallback(() => {
+    setFilters(prev => ({ ...prev, showAdvancedFilters: !prev.showAdvancedFilters }))
+  }, [])
+
+  const handleCategoryChange = useCallback((category: string, checked: boolean) => {
+    if (checked) {
+      setFilters(prev => ({
+        ...prev,
+        selectedCategories: [...prev.selectedCategories, category]
+      }))
+    } else {
+      setFilters(prev => ({
+        ...prev,
+        selectedCategories: prev.selectedCategories.filter(c => c !== category)
+      }))
+    }
+  }, [])
+
+  const handlePriorityChange = useCallback((priority: string, checked: boolean) => {
+    if (checked) {
+      setFilters(prev => ({
+        ...prev,
+        selectedPriorities: [...prev.selectedPriorities, priority]
+      }))
+    } else {
+      setFilters(prev => ({
+        ...prev,
+        selectedPriorities: prev.selectedPriorities.filter(p => p !== priority)
+      }))
+    }
+  }, [])
+
+  const handleTimelineChange = useCallback((value: number[]) => {
+    setFilters(prev => ({ ...prev, timelineRange: value as [number, number] }))
+  }, [])
 
   const hasActiveFilters = filters.searchQuery || 
     filters.selectedCategories.length > 0 || 
@@ -312,12 +357,12 @@ export function ManifestoList() {
             <Input
               placeholder={t('manifestoList.searchPlaceholder')}
               value={filters.searchQuery}
-              onChange={(e) => setFilters(prev => ({ ...prev, searchQuery: e.target.value }))}
+              onChange={handleSearchChange}
               className="pl-10 pr-10"
             />
             {filters.searchQuery && (
               <button
-                onClick={() => setFilters(prev => ({ ...prev, searchQuery: "" }))}
+                onClick={handleClearSearch}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
                 <X className="h-4 w-4" />
@@ -329,7 +374,7 @@ export function ManifestoList() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setFilters(prev => ({ ...prev, showAdvancedFilters: !prev.showAdvancedFilters }))}
+            onClick={toggleAdvancedFilters}
             className="gap-2"
           >
             <SlidersHorizontal className="h-4 w-4" />
@@ -376,19 +421,7 @@ export function ManifestoList() {
                         <Checkbox
                           id={category}
                           checked={filters.selectedCategories.includes(category)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setFilters(prev => ({
-                                ...prev,
-                                selectedCategories: [...prev.selectedCategories, category]
-                              }))
-                            } else {
-                              setFilters(prev => ({
-                                ...prev,
-                                selectedCategories: prev.selectedCategories.filter(c => c !== category)
-                              }))
-                            }
-                          }}
+                          onCheckedChange={(checked) => handleCategoryChange(category, !!checked)}
                         />
                         <label htmlFor={category} className="text-sm">
                           {category}
@@ -407,19 +440,7 @@ export function ManifestoList() {
                         <Checkbox
                           id={priority}
                           checked={filters.selectedPriorities.includes(priority)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setFilters(prev => ({
-                                ...prev,
-                                selectedPriorities: [...prev.selectedPriorities, priority]
-                              }))
-                            } else {
-                              setFilters(prev => ({
-                                ...prev,
-                                selectedPriorities: prev.selectedPriorities.filter(p => p !== priority)
-                              }))
-                            }
-                          }}
+                          onCheckedChange={(checked) => handlePriorityChange(priority, !!checked)}
                         />
                         <label htmlFor={priority} className="text-sm">
                           {priority}
@@ -436,7 +457,7 @@ export function ManifestoList() {
                   </label>
                   <Slider
                     value={filters.timelineRange}
-                    onValueChange={(value) => setFilters(prev => ({ ...prev, timelineRange: value as [number, number] }))}
+                    onValueChange={handleTimelineChange}
                     min={6}
                     max={60}
                     step={6}

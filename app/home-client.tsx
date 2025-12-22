@@ -72,7 +72,7 @@ export default function HomeClient() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center space-y-4">
               <div className="flex justify-center items-center gap-3">
-                <img src="/nepal-flag-logo.png" alt="NepalReforms Logo" className="w-8 h-8 object-contain" />
+                <img src="/nepal-flag-logo.png" alt="NepalReforms Logo" className="w-8 h-8 object-contain" loading="lazy" />
                 <span className="text-lg font-semibold text-foreground">NepalReforms</span>
               </div>
               <p className="text-sm text-muted-foreground"><span suppressHydrationWarning>{t('footer.tagline')}</span></p>

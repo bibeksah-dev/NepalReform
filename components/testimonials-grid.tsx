@@ -88,6 +88,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
                     height={64}
                     className="object-cover w-full h-full"
                     onError={() => setImageError(true)}
+                    loading="lazy"
                     unoptimized
                   />
                 ) : (

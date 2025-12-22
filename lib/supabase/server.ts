@@ -81,6 +81,9 @@ export async function createClient() {
   const cookieStore = await cookies()
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      storageKey: 'nepalreforms.auth',
+    },
     cookies: {
       getAll() {
         return cookieStore.getAll()

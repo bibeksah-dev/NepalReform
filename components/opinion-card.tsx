@@ -1,7 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { createClient } from "@/lib/supabase/client"
+import { useState, useMemo, memo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -22,170 +21,55 @@ interface Opinion {
 
 interface OpinionCardProps {
   opinion: Opinion
+  voteCounts?: { likes: number; dislikes: number }
+  userVote?: "like" | "dislike" | null
+  onVote?: (itemId: string, voteType: "like" | "dislike") => void
+  user?: any
 }
 
-// Add Vote type for votes in agenda_votes
-interface Vote {
-  vote_type: "like" | "dislike";
-  // add other fields if you use them elsewhere
+// Category colors memoized outside component to avoid recreation
+const CATEGORY_COLORS: Record<string, string> = {
+  Governance: "bg-orange-100 text-orange-800 border-orange-200",
+  Democracy: "bg-blue-100 text-blue-800 border-blue-200",
+  Justice: "bg-purple-100 text-purple-800 border-purple-200",
+  Federalism: "bg-green-100 text-green-800 border-green-200",
+  Administration: "bg-slate-100 text-slate-800 border-slate-200",
+  Economy: "bg-amber-100 text-amber-800 border-amber-200",
+  Education: "bg-emerald-100 text-emerald-800 border-emerald-200",
+  Healthcare: "bg-red-100 text-red-800 border-red-200",
+  Infrastructure: "bg-cyan-100 text-cyan-800 border-cyan-200",
 }
 
-export function OpinionCard({ opinion }: OpinionCardProps) {
+const getCategoryColor = (category: string) =>
+  CATEGORY_COLORS[category] || "bg-gray-100 text-gray-800 border-gray-200"
+
+const formatDate = (dateString: string) =>
+  new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })
+
+function OpinionCardComponent({
+  opinion,
+  voteCounts = { likes: 0, dislikes: 0 },
+  userVote = null,
+  onVote,
+  user
+}: OpinionCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
-  const [user, setUser] = useState<any>(null)
-  const [userVote, setUserVote] = useState<"like" | "dislike" | null>(null)
-  const [voteCounts, setVoteCounts] = useState({ likes: 0, dislikes: 0 })
-  const [suggestionCount, setSuggestionCount] = useState(0)
 
-  const supabase = createClient()
-
-  useEffect(() => {
-    checkUser()
-    fetchVoteCounts()
-    fetchSuggestionCount()
-  }, [opinion.id])
-
-  const checkUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    setUser(user)
-    if (user) {
-      fetchUserVote(user.id)
-    }
-  }
-
-  const fetchUserVote = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("agenda_votes")
-        .select("vote_type")
-        .eq("agenda_id", opinion.id)
-        .eq("user_id", userId)
-        .single()
-
-      if (error && error.code !== "PGRST116") throw error
-      setUserVote(data?.vote_type || null)
-    } catch (error) {
-      console.error("Error fetching user vote:", error)
-    }
-  }
-
-  const fetchVoteCounts = async () => {
-    try {
-      const { data, error }: { data: Vote[] | null, error: any } = await supabase.from("agenda_votes").select("vote_type").eq("agenda_id", opinion.id);
-
-      if (error) throw error
-
-      const counts = { likes: 0, dislikes: 0 }
-      data?.forEach((vote) => {
-        if (vote.vote_type === "like") counts.likes++
-        else if (vote.vote_type === "dislike") counts.dislikes++
-      })
-
-      setVoteCounts(counts)
-    } catch (error) {
-      console.error("Error fetching vote counts:", error)
-    }
-  }
-
-  const fetchSuggestionCount = async () => {
-    try {
-      const { count, error } = await supabase
-        .from("suggestions")
-        .select("*", { count: "exact", head: true })
-        .eq("agenda_id", opinion.id)
-
-      if (error) throw error
-      setSuggestionCount(count || 0)
-    } catch (error) {
-      console.error("Error fetching suggestion count:", error)
-    }
-  }
-
-  const handleVote = async (voteType: "like" | "dislike") => {
+  const handleVoteClick = (voteType: "like" | "dislike") => {
     if (!user) {
       window.location.href = "/auth/login"
       return
     }
-
-    try {
-      if (userVote === voteType) {
-        // Remove vote if clicking the same vote type
-        const { error } = await supabase
-          .from("agenda_votes")
-          .delete()
-          .eq("agenda_id", opinion.id)
-          .eq("user_id", user.id)
-
-        if (error) throw error
-
-        setUserVote(null)
-        setVoteCounts((prev) => ({
-          ...prev,
-          [voteType === "like" ? "likes" : "dislikes"]: Math.max(
-            0,
-            prev[voteType === "like" ? "likes" : "dislikes"] - 1,
-          ),
-        }))
-      } else {
-        // Insert or update vote
-        const { error } = await supabase.from("agenda_votes").upsert({
-          agenda_id: opinion.id,
-          user_id: user.id,
-          vote_type: voteType,
-        })
-
-        if (error) throw error
-
-        // Update local state
-        const oldVote = userVote
-        setUserVote(voteType)
-
-        setVoteCounts((prev) => {
-          const newCounts = { ...prev }
-
-          // If there was a previous vote, decrease that count
-          if (oldVote) {
-            newCounts[oldVote === "like" ? "likes" : "dislikes"] = Math.max(
-              0,
-              newCounts[oldVote === "like" ? "likes" : "dislikes"] - 1,
-            )
-          }
-
-          // Increase the new vote count
-          newCounts[voteType === "like" ? "likes" : "dislikes"]++
-
-          return newCounts
-        })
-      }
-    } catch (error) {
-      console.error("Error voting:", error)
-    }
+    onVote?.(opinion.id, voteType)
   }
 
-  const getCategoryColor = (category: string) => {
-    const colors = {
-      Governance: "bg-orange-100 text-orange-800 border-orange-200",
-      Democracy: "bg-blue-100 text-blue-800 border-blue-200",
-      Justice: "bg-purple-100 text-purple-800 border-purple-200",
-      Federalism: "bg-green-100 text-green-800 border-green-200",
-      Administration: "bg-slate-100 text-slate-800 border-slate-200",
-      Economy: "bg-amber-100 text-amber-800 border-amber-200",
-      Education: "bg-emerald-100 text-emerald-800 border-emerald-200",
-      Healthcare: "bg-red-100 text-red-800 border-red-200",
-      Infrastructure: "bg-cyan-100 text-cyan-800 border-cyan-200",
-    }
-    return colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800 border-gray-200"
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })
-  }
+  // Memoize category color
+  const categoryColor = useMemo(() => getCategoryColor(opinion.category), [opinion.category])
+  const formattedDate = useMemo(() => formatDate(opinion.created_at), [opinion.created_at])
 
   return (
     <Card className="w-full transition-all duration-300 hover:shadow-lg border-l-4 border-l-primary">
@@ -193,12 +77,12 @@ export function OpinionCard({ opinion }: OpinionCardProps) {
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <Badge variant="outline" className={cn("text-xs font-medium", getCategoryColor(opinion.category))}>
+              <Badge variant="outline" className={cn("text-xs font-medium", categoryColor)}>
                 {opinion.category}
               </Badge>
               <Badge variant="outline" className="text-xs font-medium bg-blue-100 text-blue-800 border-blue-200">
                 <Clock className="w-3 h-3 mr-1" />
-                {formatDate(opinion.created_at)}
+                {formattedDate}
               </Badge>
             </div>
             <CardTitle className="text-lg font-bold text-foreground leading-tight mb-2">{opinion.title}</CardTitle>
@@ -271,7 +155,7 @@ export function OpinionCard({ opinion }: OpinionCardProps) {
           <Button
             variant={userVote === "like" ? "default" : "outline"}
             size="sm"
-            onClick={() => handleVote("like")}
+            onClick={() => handleVoteClick("like")}
             className={cn(
               "flex items-center gap-1 transition-colors",
               userVote === "like" && "bg-green-600 hover:bg-green-700 text-white",
@@ -284,19 +168,17 @@ export function OpinionCard({ opinion }: OpinionCardProps) {
           <Button
             variant={userVote === "dislike" ? "destructive" : "outline"}
             size="sm"
-            onClick={() => handleVote("dislike")}
+            onClick={() => handleVoteClick("dislike")}
             className="flex items-center gap-1 transition-colors"
           >
             <ThumbsDown className="h-4 w-4" />
             <span className="text-xs">{voteCounts.dislikes}</span>
-          </Button>
-
-          <Button variant="outline" size="sm" className="flex items-center gap-2 bg-transparent">
-            <MessageSquare className="h-4 w-4" />
-            <span className="text-xs">{suggestionCount}</span>
           </Button>
         </div>
       </CardContent>
     </Card>
   )
 }
+
+// Memoize to prevent unnecessary re-renders when parent updates
+export const OpinionCard = memo(OpinionCardComponent)

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { OpinionCard } from "./opinion-card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
+import { useVoting } from "@/hooks/use-voting"
 
 interface Opinion {
   id: string
@@ -59,6 +60,10 @@ export function OpinionBrowser({ initialOpinions = [] }: OpinionBrowserProps) {
   const [sortBy, setSortBy] = useState("newest")
   const [loading, setLoading] = useState(false)
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1 })
+
+  // Batch fetch votes for all visible opinions (eliminates N+1 queries)
+  const opinionIds = useMemo(() => filteredOpinions.map(o => o.id), [filteredOpinions])
+  const { voteCounts, userVotes, handleVote, user } = useVoting("agenda_votes", opinionIds)
 
   useEffect(() => {
     fetchOpinions()
@@ -266,7 +271,14 @@ export function OpinionBrowser({ initialOpinions = [] }: OpinionBrowserProps) {
       ) : filteredOpinions.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredOpinions.map((opinion) => (
-            <OpinionCard key={opinion.id} opinion={opinion} />
+            <OpinionCard
+              key={opinion.id}
+              opinion={opinion}
+              voteCounts={voteCounts[opinion.id] || { likes: 0, dislikes: 0 }}
+              userVote={userVotes[opinion.id] || null}
+              onVote={handleVote}
+              user={user}
+            />
           ))}
         </div>
       ) : (

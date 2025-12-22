@@ -40,13 +40,13 @@ export async function getOrCreateAgendaUUID(manifestoId: string): Promise<string
   const supabase = await createClient()
 
   try {
-    // First, try to find existing agenda by ID column (manifesto number)
+    // First, try to find existing agenda by sequence_id column (manifesto number)
     const manifestoNumber = manifestoId.replace("manifesto-", "")
 
     const { data: existingAgenda, error: fetchError } = await supabase
       .from("agendas")
       .select("id")
-      .eq("ID", Number.parseInt(manifestoNumber))
+      .eq("sequence_id", Number.parseInt(manifestoNumber))
       .single()
 
     if (fetchError && fetchError.code !== "PGRST116") {

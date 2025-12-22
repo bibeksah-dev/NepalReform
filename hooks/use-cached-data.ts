@@ -13,51 +13,18 @@ import type { ManifestoItem } from '@/lib/manifesto-data'
 const supabase = createBrowserSupabase()
 
 /**
- * Hook for fetching manifesto data with multi-layer caching
+ * Hook for fetching manifesto data
+ * Simplified: manifesto data is static, so React Query cache is sufficient
  */
 export function useManifestoData() {
   return useQuery({
     queryKey: ['manifesto', 'all'],
-    queryFn: async (): Promise<ManifestoItem[]> => {
-      // 1. Try to get from localStorage first (fastest)
-      const cachedData = CacheManager.getLocal<ManifestoItem[]>(
-        CacheManager.KEYS.MANIFESTO_DATA
-      )
-      if (cachedData) {
-        console.log('📦 Loading manifesto from localStorage cache')
-        return cachedData
-      }
-
-      // 2. Try IndexedDB for larger dataset
-      const cacheInstance = CacheManager.getInstance();
-      if (cacheInstance.isIndexedDBReady()) {
-        const indexedData = await cacheInstance.getAllIndexedDB<ManifestoItem>('manifesto')
-        if (indexedData && indexedData.length > 0) {
-          console.log('💾 Loading manifesto from IndexedDB')
-          // Also save to localStorage for next time
-          CacheManager.setLocal(CacheManager.KEYS.MANIFESTO_DATA, indexedData, CacheManager.TTL.MANIFESTO)
-          return indexedData
-        }
-      }
-
-      // 3. Load from static data (no server call needed!)
-      console.log('📄 Loading manifesto from static data')
-      const data = manifestoData
-
-      // 4. Cache for future use
-      CacheManager.setLocal(CacheManager.KEYS.MANIFESTO_DATA, data, CacheManager.TTL.MANIFESTO)
-      
-      // Also save to IndexedDB for persistence
-      if (cacheInstance.isIndexedDBReady()) {
-        for (const item of data) {
-          await cacheInstance.setIndexedDB('manifesto', item)
-        }
-      }
-
-      return data
+    queryFn: (): ManifestoItem[] => {
+      // Static data - no server call or complex caching needed
+      return manifestoData
     },
-    staleTime: CacheManager.TTL.MANIFESTO, // Data is fresh for 7 days
-    // cacheTime: Infinity, // Removed: not a valid option
+    staleTime: Infinity, // Static data never goes stale
+    gcTime: Infinity, // Keep forever
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
@@ -65,168 +32,61 @@ export function useManifestoData() {
 }
 
 /**
- * Hook for fetching votes with caching
+ * Hook for fetching votes
+ * Note: Legacy hook - votes are now handled via agenda_votes/suggestion_votes tables
+ * Use the useVoting hook from use-voting.ts instead for the new vote system
  */
 export function useVotes(manifestoId?: string) {
-  const queryKey = manifestoId ? ['votes', manifestoId] : ['votes', 'all']
-  
   return useQuery({
-    queryKey,
-    queryFn: async () => {
-      // 1. Check localStorage cache first
-      const cacheKey = manifestoId 
-        ? `${CacheManager.KEYS.USER_VOTES}_${manifestoId}`
-        : CacheManager.KEYS.USER_VOTES
-      
-      const cachedVotes = CacheManager.getLocal<any[]>(cacheKey)
-      if (cachedVotes) {
-        console.log('📦 Loading votes from cache')
-        return cachedVotes
-      }
-
-      // 2. Votes table not used in current schema; avoid 404s.
-      //    If votes are needed, use the dedicated agenda/suggestion vote APIs instead.
-      console.log('⚠️ Skipping legacy votes fetch (no votes table). Returning empty list.')
-      CacheManager.setLocal(cacheKey, [], CacheManager.TTL.VOTES)
-      return []
-    },
-    staleTime: CacheManager.TTL.VOTES,
+    queryKey: manifestoId ? ['votes', manifestoId] : ['votes', 'all'],
+    queryFn: () => [],
+    staleTime: Infinity,
     refetchOnWindowFocus: false,
-    retry: 0,
+    enabled: false, // Disabled - use useVoting hook instead
   })
 }
 
 /**
- * Hook for submitting votes with optimistic updates
+ * Hook for submitting votes
+ * Note: Legacy hook - use useVoting from use-voting.ts for the new vote system
+ * @deprecated Use useVoting hook instead
  */
 export function useVoteMutation() {
-  const queryClient = useQueryClient()
-  
   return useMutation({
-    mutationFn: async ({ 
-      manifestoId, 
-      userId, 
-      voteType 
-    }: { 
-      manifestoId: string
-      userId?: string
-      voteType: 'up' | 'down' 
-    }) => {
-      // Legacy votes table not in schema; perform local optimistic update only.
-      if (!navigator.onLine) {
-        CacheManager.saveOfflineAction({
-          type: 'vote',
-          data: { manifestoId, userId, voteType },
-          timestamp: Date.now(),
-        })
-        return { offline: true, manifestoId, voteType }
-      }
-
-      // Simulate a server response without hitting a non-existent table
-      return {
-        manifesto_id: manifestoId,
-        user_id: userId,
-        vote_type: voteType,
-        created_at: new Date().toISOString(),
-        id: `local_${Date.now()}`,
-      }
-    },
-    onMutate: async ({ manifestoId, voteType }) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['votes'] })
-      
-      // Snapshot previous value
-      const previousVotes = queryClient.getQueryData(['votes', 'all'])
-      
-      // Optimistically update cache
-      queryClient.setQueryData(['votes', 'all'], (old: any[]) => {
-        const newVote = {
-          manifesto_id: manifestoId,
-          vote_type: voteType,
-          created_at: new Date().toISOString(),
-          id: `temp_${Date.now()}`,
-        }
-        return [...(old || []), newVote]
-      })
-      
-      // Update localStorage cache immediately
-      const cacheKey = CacheManager.KEYS.USER_VOTES
-      const currentVotes = CacheManager.getLocal<any[]>(cacheKey) || []
-      currentVotes.push({
-        manifesto_id: manifestoId,
-        vote_type: voteType,
-        created_at: new Date().toISOString(),
-      })
-      CacheManager.setLocal(cacheKey, currentVotes, CacheManager.TTL.VOTES)
-      
-      return { previousVotes }
-    },
-    onError: (err, variables, context) => {
-      // Rollback on error
-      if (context?.previousVotes) {
-        queryClient.setQueryData(['votes', 'all'], context.previousVotes)
-      }
-      console.error('Vote error:', err)
-    },
-    onSuccess: (data, variables) => {
-      // Invalidate and refetch specific vote queries
-      queryClient.invalidateQueries({ queryKey: ['votes', variables.manifestoId] })
-      
-      // Update cache with real data
-      const cacheKey = `${CacheManager.KEYS.USER_VOTES}_${variables.manifestoId}`
-      queryClient.setQueryData(['votes', variables.manifestoId], (old: any[]) => {
-        return [...(old || []).filter((v: any) => !v.id.startsWith('temp_')), data]
-      })
+    mutationFn: async (_params: { manifestoId: string; userId?: string; voteType: 'up' | 'down' }) => {
+      throw new Error('Legacy useVoteMutation is deprecated. Use useVoting hook instead.')
     },
   })
 }
 
 /**
- * Hook for fetching suggestions with caching
+ * Hook for fetching suggestions
+ * Simplified: React Query handles caching, no need for localStorage layer
  */
 export function useSuggestions(manifestoId?: string) {
   return useQuery({
     queryKey: manifestoId ? ['suggestions', manifestoId] : ['suggestions', 'all'],
     queryFn: async () => {
-      const cacheKey = manifestoId
-        ? `${CacheManager.KEYS.USER_SUGGESTIONS}_${manifestoId}`
-        : CacheManager.KEYS.USER_SUGGESTIONS
-      
-      // Check cache first
-      const cached = CacheManager.getLocal<any[]>(cacheKey)
-      if (cached) {
-        console.log('📦 Loading suggestions from cache')
-        return cached
-      }
-
-      // Fetch from server
-      console.log('🔄 Fetching suggestions from server')
       let query = supabase
         .from('suggestions')
         .select('*, profiles(*)')
         .order('created_at', { ascending: false })
-      
+
       if (manifestoId) {
         query = query.eq('manifesto_id', manifestoId)
       }
-      
+
       const { data, error } = await query
-      
+
       if (error) {
         console.error('Error fetching suggestions:', error)
-        // Return empty array as fallback
         return []
-      }
-
-      // Cache the result
-      if (data) {
-        CacheManager.setLocal(cacheKey, data, CacheManager.TTL.SUGGESTIONS)
       }
 
       return data || []
     },
-    staleTime: CacheManager.TTL.SUGGESTIONS,
-    // cacheTime: CacheManager.TTL.SUGGESTIONS * 2, // Removed: not a valid option
+    staleTime: 60 * 1000, // 1 minute
+    gcTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
   })
 }
@@ -236,7 +96,7 @@ export function useSuggestions(manifestoId?: string) {
  */
 export function useSuggestionMutation() {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: async (suggestion: {
       manifesto_id: string
@@ -244,7 +104,7 @@ export function useSuggestionMutation() {
       description: string
       user_id?: string
     }) => {
-      // Handle offline
+      // Handle offline - save for later sync
       if (!navigator.onLine) {
         CacheManager.saveOfflineAction({
           type: 'suggestion',
@@ -259,62 +119,47 @@ export function useSuggestionMutation() {
         .insert(suggestion)
         .select('*, profiles(*)')
         .single()
-      
+
       if (error) throw error
       return data
     },
     onSuccess: (data, variables) => {
-      // Update cache
-      const cacheKey = `${CacheManager.KEYS.USER_SUGGESTIONS}_${variables.manifesto_id}`
+      // Optimistically update React Query cache
       queryClient.setQueryData(['suggestions', variables.manifesto_id], (old: any[]) => {
         return [data, ...(old || [])]
       })
-      
-      // Invalidate queries
+      // Invalidate to ensure fresh data
       queryClient.invalidateQueries({ queryKey: ['suggestions'] })
     },
   })
 }
 
 /**
- * Hook for fetching user profile with caching
+ * Hook for fetching user profile
+ * Simplified: React Query handles caching
  */
 export function useUserProfile() {
   return useQuery({
     queryKey: ['user', 'profile'],
     queryFn: async () => {
-      // Check cache first
-      const cached = CacheManager.getLocal<any>(CacheManager.KEYS.USER_PROFILE)
-      if (cached) {
-        console.log('📦 Loading user profile from cache')
-        return cached
-      }
-
-      // Get current user
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return null
 
-      // Fetch profile
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single()
-      
+
       if (error) {
         console.error('Error fetching profile:', error)
         return null
       }
 
-      // Cache the result
-      if (data) {
-        CacheManager.setLocal(CacheManager.KEYS.USER_PROFILE, data, CacheManager.TTL.USER_DATA)
-      }
-
       return data
     },
-    staleTime: CacheManager.TTL.USER_DATA,
-    // cacheTime: CacheManager.TTL.USER_DATA * 2, // Removed: not a valid option
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
   })
 }
 
