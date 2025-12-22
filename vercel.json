@@ -1,6 +1,6 @@
 {
-  "buildCommand": "pnpm run build",
-  "installCommand": "pnpm install",
+  "buildCommand": "bun run build",
+  "installCommand": "bun install",
   "outputDirectory": ".next",
   "framework": "nextjs",
   "functions": {
